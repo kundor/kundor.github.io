@@ -1,0 +1,510 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Uses of std::binary_function and std::unary_function by kundor</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h3>Uses of std::binary_function and std::unary_function in Boost 1.61</h3>
+      </header>
+      <section>
+        <p>accumulators/numeric/functional/valarray.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">120</span>:        <span class="pl-k">struct</span> <span class="pl-en">Name</span>&lt;Left, Right, std_valarray_tag, std_valarray_tag&gt;
+  <span class="pl-c1">121</span>:          : std::binary_function&lt;
+  --
+  <span class="pl-c1">147</span>:        <span class="pl-k">struct</span> <span class="pl-en">Name</span>&lt;Left, Right, std_valarray_tag, <span class="pl-k">void</span>&gt;
+  <span class="pl-c1">148</span>:          : std::binary_function&lt;
+  --
+  <span class="pl-c1">169</span>:        <span class="pl-k">struct</span> <span class="pl-en">Name</span>&lt;Left, Right, <span class="pl-k">void</span>, std_valarray_tag&gt;
+  <span class="pl-c1">170</span>:          : std::binary_function&lt;
+  --
+  <span class="pl-c1">202</span>:        <span class="pl-k">struct</span> <span class="pl-en">min_assign</span>&lt;Left, Right, std_valarray_tag, std_valarray_tag&gt;
+  <span class="pl-c1">203</span>:          : std::binary_function&lt;Left, Right, <span class="pl-k">void</span>&gt;
+  --
+  <span class="pl-c1">221</span>:        <span class="pl-k">struct</span> <span class="pl-en">max_assign</span>&lt;Left, Right, std_valarray_tag, std_valarray_tag&gt;
+  <span class="pl-c1">222</span>:          : std::binary_function&lt;Left, Right, <span class="pl-k">void</span>&gt;
+  --
+  <span class="pl-c1">249</span>:        <span class="pl-k">struct</span> <span class="pl-en">promote</span>&lt;To, From, std_valarray_tag, std_valarray_tag&gt;
+  <span class="pl-c1">250</span>:          : std::unary_function&lt;From, To&gt;
+  --
+  <span class="pl-c1">264</span>:        <span class="pl-k">struct</span> <span class="pl-en">promote</span>&lt;ToFrom, ToFrom, std_valarray_tag, std_valarray_tag&gt;
+  <span class="pl-c1">265</span>:          : std::unary_function&lt;ToFrom, ToFrom&gt;
+  --
+  <span class="pl-c1">277</span>:        <span class="pl-k">struct</span> <span class="pl-en">promote</span>&lt;<span class="pl-k">bool</span>, From, <span class="pl-k">void</span>, std_valarray_tag&gt;
+  <span class="pl-c1">278</span>:          : std::unary_function&lt;From, <span class="pl-k">bool</span>&gt;
+  --
+  <span class="pl-c1">302</span>:        <span class="pl-k">struct</span> <span class="pl-en">as_min</span>&lt;T, std_valarray_tag&gt;
+  <span class="pl-c1">303</span>:            : std::unary_function&lt;T, <span class="pl-k">typename</span> remove_const&lt;T&gt;::type&gt;
+  --
+  <span class="pl-c1">316</span>:        <span class="pl-k">struct</span> <span class="pl-en">as_max</span>&lt;T, std_valarray_tag&gt;
+  <span class="pl-c1">317</span>:          : std::unary_function&lt;T, <span class="pl-k">typename</span> remove_const&lt;T&gt;::type&gt;
+  --
+  <span class="pl-c1">330</span>:        <span class="pl-k">struct</span> <span class="pl-en">as_zero</span>&lt;T, std_valarray_tag&gt;
+  <span class="pl-c1">331</span>:          : std::unary_function&lt;T, <span class="pl-k">typename</span> remove_const&lt;T&gt;::type&gt;
+  --
+  <span class="pl-c1">344</span>:        <span class="pl-k">struct</span> <span class="pl-en">as_one</span>&lt;T, std_valarray_tag&gt;
+  <span class="pl-c1">345</span>:          : std::unary_function&lt;T, <span class="pl-k">typename</span> remove_const&lt;T&gt;::type&gt;</pre></div>
+
+<p>accumulators/numeric/functional/vector.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">197</span>:        <span class="pl-k">struct</span> <span class="pl-en">min_assign</span>&lt;Left, Right, std_vector_tag, std_vector_tag&gt;
+  <span class="pl-c1">198</span>:          : std::binary_function&lt;Left, Right, <span class="pl-k">void</span>&gt;
+  --
+  <span class="pl-c1">216</span>:        <span class="pl-k">struct</span> <span class="pl-en">max_assign</span>&lt;Left, Right, std_vector_tag, std_vector_tag&gt;
+  <span class="pl-c1">217</span>:          : std::binary_function&lt;Left, Right, <span class="pl-k">void</span>&gt;
+  --
+  <span class="pl-c1">244</span>:        <span class="pl-k">struct</span> <span class="pl-en">promote</span>&lt;To, From, std_vector_tag, std_vector_tag&gt;
+  <span class="pl-c1">245</span>:          : std::unary_function&lt;From, To&gt;
+  --
+  <span class="pl-c1">259</span>:        <span class="pl-k">struct</span> <span class="pl-en">promote</span>&lt;ToFrom, ToFrom, std_vector_tag, std_vector_tag&gt;
+  <span class="pl-c1">260</span>:          : std::unary_function&lt;ToFrom, ToFrom&gt;
+  --
+  <span class="pl-c1">271</span>:        <span class="pl-k">struct</span> <span class="pl-en">as_min</span>&lt;T, std_vector_tag&gt;
+  <span class="pl-c1">272</span>:          : std::unary_function&lt;T, <span class="pl-k">typename</span> remove_const&lt;T&gt;::type&gt;
+  --
+  <span class="pl-c1">285</span>:        <span class="pl-k">struct</span> <span class="pl-en">as_max</span>&lt;T, std_vector_tag&gt;
+  <span class="pl-c1">286</span>:          : std::unary_function&lt;T, <span class="pl-k">typename</span> remove_const&lt;T&gt;::type&gt;
+  --
+  <span class="pl-c1">299</span>:        <span class="pl-k">struct</span> <span class="pl-en">as_zero</span>&lt;T, std_vector_tag&gt;
+  <span class="pl-c1">300</span>:          : std::unary_function&lt;T, <span class="pl-k">typename</span> remove_const&lt;T&gt;::type&gt;
+  --
+  <span class="pl-c1">313</span>:        <span class="pl-k">struct</span> <span class="pl-en">as_one</span>&lt;T, std_vector_tag&gt;
+  <span class="pl-c1">314</span>:          : std::unary_function&lt;T, <span class="pl-k">typename</span> remove_const&lt;T&gt;::type&gt;</pre></div>
+
+<p>accumulators/numeric/functional.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">101</span>:        <span class="pl-k">struct</span> <span class="pl-en">Name</span> ## _base
+  <span class="pl-c1">102</span>:          : std::unary_function&lt;
+  --
+  <span class="pl-c1">140</span>:        <span class="pl-k">struct</span> <span class="pl-en">Name</span> ## _base
+  <span class="pl-c1">141</span>:          : std::binary_function&lt;
+  --
+  <span class="pl-c1">222</span>:        <span class="pl-k">struct</span> <span class="pl-en">min_assign_base</span>
+  <span class="pl-c1">223</span>:          : std::binary_function&lt;Left, Right, <span class="pl-k">void</span>&gt;
+  --
+  <span class="pl-c1">235</span>:        <span class="pl-k">struct</span> <span class="pl-en">max_assign_base</span>
+  <span class="pl-c1">236</span>:          : std::binary_function&lt;Left, Right, <span class="pl-k">void</span>&gt;
+  --
+  <span class="pl-c1">260</span>:        <span class="pl-k">struct</span> <span class="pl-en">promote_base</span>
+  <span class="pl-c1">261</span>:          : std::unary_function&lt;From, To&gt;
+  --
+  <span class="pl-c1">270</span>:        <span class="pl-k">struct</span> <span class="pl-en">promote_base</span>&lt;ToFrom, ToFrom, <span class="pl-k">void</span>&gt;
+  <span class="pl-c1">271</span>:          : std::unary_function&lt;ToFrom, ToFrom&gt;
+  --
+  <span class="pl-c1">280</span>:        <span class="pl-k">struct</span> <span class="pl-en">as_min_base</span>
+  <span class="pl-c1">281</span>:          : std::unary_function&lt;Arg, <span class="pl-k">typename</span> remove_const&lt;Arg&gt;::type&gt;
+  --
+  <span class="pl-c1">292</span>:        <span class="pl-k">struct</span> <span class="pl-en">as_min_base</span>&lt;Arg, <span class="pl-k">typename</span> enable_if&lt;is_floating_point&lt;Arg&gt; &gt;::type&gt;
+  <span class="pl-c1">293</span>:          : std::unary_function&lt;Arg, <span class="pl-k">typename</span> remove_const&lt;Arg&gt;::type&gt;
+  --
+  <span class="pl-c1">304</span>:        <span class="pl-k">struct</span> <span class="pl-en">as_max_base</span>
+  <span class="pl-c1">305</span>:          : std::unary_function&lt;Arg, <span class="pl-k">typename</span> remove_const&lt;Arg&gt;::type&gt;
+  --
+  <span class="pl-c1">316</span>:        <span class="pl-k">struct</span> <span class="pl-en">as_zero_base</span>
+  <span class="pl-c1">317</span>:          : std::unary_function&lt;Arg, <span class="pl-k">typename</span> remove_const&lt;Arg&gt;::type&gt;
+  --
+  <span class="pl-c1">326</span>:        <span class="pl-k">struct</span> <span class="pl-en">as_one_base</span>
+  <span class="pl-c1">327</span>:          : std::unary_function&lt;Arg, <span class="pl-k">typename</span> remove_const&lt;Arg&gt;::type&gt;</pre></div>
+
+<p>accumulators/statistics/covariance.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">52</span>:        <span class="pl-k">struct</span> <span class="pl-en">outer_product</span>&lt;Left, Right, std_vector_tag, std_vector_tag&gt;
+  <span class="pl-c1">53</span>:          : std::binary_function&lt;</pre></div>
+
+<p>accumulators/statistics/tail.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">250</span>:        <span class="pl-k">struct</span> <span class="pl-en">indirect_cmp</span>
+  <span class="pl-c1">251</span>:          : std::binary_function&lt;std::<span class="pl-c1">size_t</span>, std::<span class="pl-c1">size_t</span>, <span class="pl-k">bool</span>&gt;</pre></div>
+
+<p>algorithm/cxx14/equal.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">22</span>:    <span class="pl-k">template </span>&lt;<span class="pl-k">class</span> <span class="pl-en">T1</span>, <span class="pl-k">class</span> <span class="pl-en">T2</span>&gt;
+  <span class="pl-c1">23</span>:    <span class="pl-k">struct</span> <span class="pl-en">eq</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::binary_function&lt;T1, T2, <span class="pl-k">bool</span>&gt; {</pre></div>
+
+<p>algorithm/string/detail/case_conv.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">32</span>:            <span class="pl-k">template</span>&lt;<span class="pl-k">typename</span> CharT&gt;
+  <span class="pl-c1">33</span>:            <span class="pl-k">struct</span> <span class="pl-en">to_lowerF</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::unary_function&lt;CharT, CharT&gt;
+  --
+  <span class="pl-c1">52</span>:            <span class="pl-k">template</span>&lt;<span class="pl-k">typename</span> CharT&gt;
+  <span class="pl-c1">53</span>:            <span class="pl-k">struct</span> <span class="pl-en">to_upperF</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::unary_function&lt;CharT, CharT&gt;</pre></div>
+
+<p>algorithm/string/detail/util.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">92</span>:            <span class="pl-k">struct</span> <span class="pl-en">copy_iterator_rangeF</span> : 
+  <span class="pl-c1">93</span>:                public std::unary_function&lt; iterator_range&lt;IteratorT&gt;, SeqT &gt;</pre></div>
+
+<p>bimap/container_adaptor/detail/comparison_adaptor.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">35</span>:<span class="pl-k">template </span>&lt; <span class="pl-k">class</span> <span class="pl-en">Compare</span>, <span class="pl-k">class</span> <span class="pl-en">NewType</span>, <span class="pl-k">class</span> <span class="pl-en">Converter</span> &gt;
+  <span class="pl-c1">36</span>:<span class="pl-k">struct</span> <span class="pl-en">comparison_adaptor</span> : std::binary_function&lt;NewType,NewType,<span class="pl-k">bool</span>&gt;
+  --
+  <span class="pl-c1">52</span>:<span class="pl-k">template </span>&lt; <span class="pl-k">class</span> <span class="pl-en">Compare</span>, <span class="pl-k">class</span> <span class="pl-en">NewType</span>, <span class="pl-k">class</span> <span class="pl-en">Converter</span> &gt;
+  <span class="pl-c1">53</span>:<span class="pl-k">struct</span> <span class="pl-en">compatible_comparison_adaptor</span> : std::binary_function&lt;NewType,NewType,<span class="pl-k">bool</span>&gt;
+  --
+  <span class="pl-c1">77</span>:<span class="pl-k">template </span>&lt; <span class="pl-k">class</span> <span class="pl-en">Compare</span>, <span class="pl-k">class</span> <span class="pl-en">NewType</span>, <span class="pl-k">class</span> <span class="pl-en">Converter</span> &gt;
+  <span class="pl-c1">78</span>:<span class="pl-k">struct</span> <span class="pl-en">unary_check_adaptor</span> : std::unary_function&lt;NewType,<span class="pl-k">bool</span>&gt;</pre></div>
+
+<p>bimap/container_adaptor/detail/key_extractor.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">31</span>:<span class="pl-k">struct</span> <span class="pl-en">key_from_pair_extractor</span> 
+  <span class="pl-c1">32</span>:    : std::unary_function&lt; T, BOOST_DEDUCED_TYPENAME T::first_type &gt;</pre></div>
+
+<p>bimap/detail/modifier_adaptor.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">36</span>:<span class="pl-k">struct</span> <span class="pl-en">relation_modifier_adaptor</span> :
+  <span class="pl-c1">37</span>:    public std::unary_function&lt;NewArgument,<span class="pl-k">bool</span>&gt;,
+  --
+  <span class="pl-c1">67</span>:<span class="pl-k">struct</span> <span class="pl-en">unary_modifier_adaptor</span> :
+  <span class="pl-c1">68</span>:    public std::unary_function&lt;NewArgument,<span class="pl-k">bool</span>&gt;,</pre></div>
+
+<p>bimap/relation/support/data_extractor.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">42</span>:<span class="pl-k">struct</span> <span class="pl-en">data_extractor_implementation</span>&lt; member_at::left, Relation &gt; :
+  <span class="pl-c1">43</span>:    public std::unary_function&lt;Relation,BOOST_DEDUCED_TYPENAME Relation::left_value_type&gt;
+  --
+  <span class="pl-c1">59</span>:<span class="pl-k">struct</span> <span class="pl-en">data_extractor_implementation</span>&lt; member_at::right, Relation &gt; :
+  <span class="pl-c1">60</span>:    public std::unary_function&lt;Relation,BOOST_DEDUCED_TYPENAME Relation::right_value_type&gt;</pre></div>
+
+<p>function/function_template.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">660</span>:#<span class="pl-k">if</span> BOOST_FUNCTION_NUM_ARGS == <span class="pl-c1">1</span>
+  <span class="pl-c1">661</span>:
+  <span class="pl-c1">662</span>:    , public std::unary_function&lt;T0,R&gt;
+  <span class="pl-c1">663</span>:
+  <span class="pl-c1">664</span>:#elif BOOST_FUNCTION_NUM_ARGS == <span class="pl-c1">2</span>
+  <span class="pl-c1">665</span>:
+  <span class="pl-c1">666</span>:    , public std::binary_function&lt;T0,T1,R&gt;
+  <span class="pl-c1">667</span>:
+  <span class="pl-c1">668</span>:#endif</pre></div>
+
+<p>functional/hash/extensions.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">256</span>:    <span class="pl-k">template </span>&lt;<span class="pl-k">class</span> <span class="pl-en">T</span>&gt; <span class="pl-k">struct</span> <span class="pl-en">hash</span>
+  <span class="pl-c1">257</span>:        : std::unary_function&lt;T, std::<span class="pl-c1">size_t</span>&gt;
+  --
+  <span class="pl-c1">273</span>:    <span class="pl-k">template </span>&lt;<span class="pl-k">class</span> <span class="pl-en">T</span>, <span class="pl-k">unsigned</span> <span class="pl-k">int</span> n&gt; <span class="pl-k">struct</span> <span class="pl-en">hash</span>&lt;T[n]&gt;
+  <span class="pl-c1">274</span>:        : std::unary_function&lt;T[n], std::<span class="pl-c1">size_t</span>&gt;
+  --
+  <span class="pl-c1">298</span>:            <span class="pl-k">struct</span> <span class="pl-en">inner</span>
+  <span class="pl-c1">299</span>:                : std::unary_function&lt;T, std::<span class="pl-c1">size_t</span>&gt;</pre></div>
+
+<p>functional/hash/hash.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">419</span>:    <span class="pl-k">template </span>&lt;&gt; <span class="pl-k">struct</span> <span class="pl-en">hash</span>&lt;type&gt; \
+  <span class="pl-c1">420</span>:         : public std::unary_function&lt;type, std::<span class="pl-c1">size_t</span>&gt; \
+  --
+  <span class="pl-c1">429</span>:    <span class="pl-k">template </span>&lt;&gt; <span class="pl-k">struct</span> <span class="pl-en">hash</span>&lt;type&gt; \
+  <span class="pl-c1">430</span>:         : public std::unary_function&lt;type, std::<span class="pl-c1">size_t</span>&gt; \
+  --
+  <span class="pl-c1">483</span>:    <span class="pl-k">struct</span> <span class="pl-en">hash</span>&lt;T*&gt;
+  <span class="pl-c1">484</span>:        : public std::unary_function&lt;T*, std::<span class="pl-c1">size_t</span>&gt;
+  --
+  <span class="pl-c1">516</span>:            <span class="pl-k">struct</span> <span class="pl-en">inner</span>
+  <span class="pl-c1">517</span>:                : public std::unary_function&lt;T, std::<span class="pl-c1">size_t</span>&gt;</pre></div>
+
+<p>functional.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">149</span>:    <span class="pl-k">class</span> <span class="pl-en">unary_negate</span>
+  <span class="pl-c1">150</span>:        : public std::unary_function&lt;<span class="pl-k">typename</span> unary_traits&lt;Predicate&gt;::argument_type,<span class="pl-k">bool</span>&gt;
+  --
+  <span class="pl-c1">183</span>:    <span class="pl-k">class</span> <span class="pl-en">binary_negate</span>
+  <span class="pl-c1">184</span>:        : public std::binary_function&lt;<span class="pl-k">typename</span> binary_traits&lt;Predicate&gt;::first_argument_type,
+  --
+  <span class="pl-c1">220</span>:    <span class="pl-k">class</span> <span class="pl-en">binder1st</span>
+  <span class="pl-c1">221</span>:        : public std::unary_function&lt;<span class="pl-k">typename</span> binary_traits&lt;Operation&gt;::second_argument_type,
+  --
+  <span class="pl-c1">266</span>:    <span class="pl-k">class</span> <span class="pl-en">binder2nd</span>
+  <span class="pl-c1">267</span>:        : public std::unary_function&lt;<span class="pl-k">typename</span> binary_traits&lt;Operation&gt;::first_argument_type,
+  --
+  <span class="pl-c1">311</span>:    <span class="pl-k">template </span>&lt;<span class="pl-k">class</span> <span class="pl-en">S</span>, <span class="pl-k">class</span> <span class="pl-en">T</span>&gt;
+  <span class="pl-c1">312</span>:    <span class="pl-k">class</span> <span class="pl-en">mem_fun_t</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::unary_function&lt;T*, S&gt;
+  --
+  <span class="pl-c1">327</span>:    <span class="pl-k">template </span>&lt;<span class="pl-k">class</span> <span class="pl-en">S</span>, <span class="pl-k">class</span> <span class="pl-en">T</span>, <span class="pl-k">class</span> <span class="pl-en">A</span>&gt;
+  <span class="pl-c1">328</span>:    <span class="pl-k">class</span> <span class="pl-en">mem_fun1_t</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::binary_function&lt;T*, A, S&gt;
+  --
+  <span class="pl-c1">343</span>:    <span class="pl-k">template </span>&lt;<span class="pl-k">class</span> <span class="pl-en">S</span>, <span class="pl-k">class</span> <span class="pl-en">T</span>&gt;
+  <span class="pl-c1">344</span>:    <span class="pl-k">class</span> <span class="pl-en">const_mem_fun_t</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::unary_function&lt;<span class="pl-k">const</span> T*, S&gt;
+  --
+  <span class="pl-c1">359</span>:    <span class="pl-k">template </span>&lt;<span class="pl-k">class</span> <span class="pl-en">S</span>, <span class="pl-k">class</span> <span class="pl-en">T</span>, <span class="pl-k">class</span> <span class="pl-en">A</span>&gt;
+  <span class="pl-c1">360</span>:    <span class="pl-k">class</span> <span class="pl-en">const_mem_fun1_t</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::binary_function&lt;<span class="pl-k">const</span> T*, A, S&gt;
+  --
+  <span class="pl-c1">404</span>:    <span class="pl-k">template </span>&lt;<span class="pl-k">class</span> <span class="pl-en">S</span>, <span class="pl-k">class</span> <span class="pl-en">T</span>&gt;
+  <span class="pl-c1">405</span>:    <span class="pl-k">class</span> <span class="pl-en">mem_fun_ref_t</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::unary_function&lt;T&amp;, S&gt;
+  --
+  <span class="pl-c1">420</span>:    <span class="pl-k">template </span>&lt;<span class="pl-k">class</span> <span class="pl-en">S</span>, <span class="pl-k">class</span> <span class="pl-en">T</span>, <span class="pl-k">class</span> <span class="pl-en">A</span>&gt;
+  <span class="pl-c1">421</span>:    <span class="pl-k">class</span> <span class="pl-en">mem_fun1_ref_t</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::binary_function&lt;T&amp;, A, S&gt;
+  --
+  <span class="pl-c1">436</span>:    <span class="pl-k">template </span>&lt;<span class="pl-k">class</span> <span class="pl-en">S</span>, <span class="pl-k">class</span> <span class="pl-en">T</span>&gt;
+  <span class="pl-c1">437</span>:    <span class="pl-k">class</span> <span class="pl-en">const_mem_fun_ref_t</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::unary_function&lt;<span class="pl-k">const</span> T&amp;, S&gt;
+  --
+  <span class="pl-c1">453</span>:    <span class="pl-k">template </span>&lt;<span class="pl-k">class</span> <span class="pl-en">S</span>, <span class="pl-k">class</span> <span class="pl-en">T</span>, <span class="pl-k">class</span> <span class="pl-en">A</span>&gt;
+  <span class="pl-c1">454</span>:    <span class="pl-k">class</span> <span class="pl-en">const_mem_fun1_ref_t</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::binary_function&lt;<span class="pl-k">const</span> T&amp;, A, S&gt;
+  --
+  <span class="pl-c1">499</span>:    <span class="pl-k">template </span>&lt;<span class="pl-k">class</span> <span class="pl-en">Arg</span>, <span class="pl-k">class</span> <span class="pl-en">Result</span>&gt;
+  <span class="pl-c1">500</span>:    <span class="pl-k">class</span> <span class="pl-en">pointer_to_unary_function</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::unary_function&lt;Arg,Result&gt;
+  --
+  <span class="pl-c1">523</span>:    <span class="pl-k">template </span>&lt;<span class="pl-k">class</span> <span class="pl-en">Arg1</span>, <span class="pl-k">class</span> <span class="pl-en">Arg2</span>, <span class="pl-k">class</span> <span class="pl-en">Result</span>&gt;
+  <span class="pl-c1">524</span>:    <span class="pl-k">class</span> <span class="pl-en">pointer_to_binary_function</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::binary_function&lt;Arg1,Arg2,Result&gt;</pre></div>
+
+<p>gil/channel_algorithm.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">134</span>:<span class="pl-k">template </span>&lt;<span class="pl-k">typename</span> SrcChannelV, <span class="pl-k">typename</span> DstChannelV, <span class="pl-k">bool</span> SrcIsIntegral, <span class="pl-k">bool</span> DstIsIntegral&gt; 
+  <span class="pl-c1">135</span>:<span class="pl-k">struct</span> <span class="pl-en">channel_converter_unsigned_impl</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::unary_function&lt;DstChannelV,SrcChannelV&gt; {
+  --
+  <span class="pl-c1">271</span>:<span class="pl-k">template </span>&lt;<span class="pl-k">typename</span> DstChannelV&gt; <span class="pl-k">struct</span> <span class="pl-en">channel_converter_unsigned</span>&lt;bits32f,DstChannelV&gt; : public std::unary_function&lt;bits32f,DstChannelV&gt; {
+  --
+  <span class="pl-c1">279</span>:<span class="pl-k">template </span>&lt;<span class="pl-k">typename</span> SrcChannelV&gt; <span class="pl-k">struct</span> <span class="pl-en">channel_converter_unsigned</span>&lt;SrcChannelV,bits32f&gt; : public std::unary_function&lt;SrcChannelV,bits32f&gt; {
+  --
+  <span class="pl-c1">283</span>:<span class="pl-k">template </span>&lt;&gt; <span class="pl-k">struct</span> <span class="pl-en">channel_converter_unsigned</span>&lt;bits32f,bits32f&gt; : public std::unary_function&lt;bits32f,bits32f&gt; {
+  --
+  <span class="pl-c1">289</span>:<span class="pl-k">template </span>&lt;&gt; <span class="pl-k">struct</span> <span class="pl-en">channel_converter_unsigned</span>&lt;bits32,bits32f&gt; : public std::unary_function&lt;bits32,bits32f&gt; {
+  --
+  <span class="pl-c1">297</span>:<span class="pl-k">template </span>&lt;&gt; <span class="pl-k">struct</span> <span class="pl-en">channel_converter_unsigned</span>&lt;bits32f,bits32&gt; : public std::unary_function&lt;bits32f,bits32&gt; {
+  --
+  <span class="pl-c1">315</span>:<span class="pl-k">template </span>&lt;&gt; <span class="pl-k">struct</span> <span class="pl-en">channel_convert_to_unsigned</span>&lt;bits8s&gt; : public std::unary_function&lt;bits8s,bits8&gt; { 
+  --
+  <span class="pl-c1">320</span>:<span class="pl-k">template </span>&lt;&gt; <span class="pl-k">struct</span> <span class="pl-en">channel_convert_to_unsigned</span>&lt;bits16s&gt; : public std::unary_function&lt;bits16s,bits16&gt; { 
+  --
+  <span class="pl-c1">325</span>:<span class="pl-k">template </span>&lt;&gt; <span class="pl-k">struct</span> <span class="pl-en">channel_convert_to_unsigned</span>&lt;bits32s&gt; : public std::unary_function&lt;bits32s,bits32&gt; {
+  --
+  <span class="pl-c1">338</span>:<span class="pl-k">template </span>&lt;&gt; <span class="pl-k">struct</span> <span class="pl-en">channel_convert_from_unsigned</span>&lt;bits8s&gt; : public std::unary_function&lt;bits8,bits8s&gt; { 
+  --
+  <span class="pl-c1">343</span>:<span class="pl-k">template </span>&lt;&gt; <span class="pl-k">struct</span> <span class="pl-en">channel_convert_from_unsigned</span>&lt;bits16s&gt; : public std::unary_function&lt;bits16,bits16s&gt; { 
+  --
+  <span class="pl-c1">348</span>:<span class="pl-k">template </span>&lt;&gt; <span class="pl-k">struct</span> <span class="pl-en">channel_convert_from_unsigned</span>&lt;bits32s&gt; : public std::unary_function&lt;bits32,bits32s&gt; {
+  --
+  <span class="pl-c1">357</span>:<span class="pl-k">template </span>&lt;<span class="pl-k">typename</span> SrcChannelV, <span class="pl-k">typename</span> DstChannelV&gt; <span class="pl-c">// Model ChannelValueConcept</span>
+  <span class="pl-c1">358</span>:<span class="pl-k">struct</span> <span class="pl-en">channel_converter</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::unary_function&lt;SrcChannelV,DstChannelV&gt; {
+  --
+  <span class="pl-c1">410</span>:<span class="pl-k">template </span>&lt;<span class="pl-k">typename</span> ChannelValue&gt;
+  <span class="pl-c1">411</span>:<span class="pl-k">struct</span> <span class="pl-en">channel_multiplier_unsigned</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::binary_function&lt;ChannelValue,ChannelValue,ChannelValue&gt; {
+  --
+  <span class="pl-c1">418</span>:<span class="pl-k">template</span>&lt;&gt; <span class="pl-k">struct</span> <span class="pl-en">channel_multiplier_unsigned</span>&lt;bits8&gt; : public std::binary_function&lt;bits8,bits8,bits8&gt; {
+  --
+  <span class="pl-c1">423</span>:<span class="pl-k">template</span>&lt;&gt; <span class="pl-k">struct</span> <span class="pl-en">channel_multiplier_unsigned</span>&lt;bits16&gt; : public std::binary_function&lt;bits16,bits16,bits16&gt; {
+  --
+  <span class="pl-c1">428</span>:<span class="pl-k">template</span>&lt;&gt; <span class="pl-k">struct</span> <span class="pl-en">channel_multiplier_unsigned</span>&lt;bits32f&gt; : public std::binary_function&lt;bits32f,bits32f,bits32f&gt; {
+  --
+  <span class="pl-c1">433</span>:<span class="pl-k">template </span>&lt;<span class="pl-k">typename</span> ChannelValue&gt;
+  <span class="pl-c1">434</span>:<span class="pl-k">struct</span> <span class="pl-en">channel_multiplier</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::binary_function&lt;ChannelValue, ChannelValue, ChannelValue&gt; {</pre></div>
+
+<p>gil/gil_concept.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">1106</span>:<span class="pl-k">template </span>&lt;<span class="pl-k">typename</span> P&gt;
+  <span class="pl-c1">1107</span>:<span class="pl-k">struct</span> <span class="pl-en">PixelDereferenceAdaptorArchetype</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::unary_function&lt;P, P&gt; {</pre></div>
+
+<p>gil/utilities.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">181</span>:          <span class="pl-k">typename</span> ArgType, <span class="pl-k">typename</span> ResultType, <span class="pl-k">bool</span> IsMutable&gt;
+  <span class="pl-c1">182</span>:<span class="pl-k">struct</span> <span class="pl-en">deref_base</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::unary_function&lt;ArgType, ResultType&gt; {
+  --
+  <span class="pl-c1">262</span>:<span class="pl-k">template </span>&lt;<span class="pl-k">typename</span> T&gt; 
+  <span class="pl-c1">263</span>:<span class="pl-k">struct</span> <span class="pl-en">identity</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::unary_function&lt;T,T&gt; {
+  --
+  <span class="pl-c1">270</span>:<span class="pl-k">template </span>&lt;<span class="pl-k">typename</span> T1, <span class="pl-k">typename</span> T2&gt;
+  <span class="pl-c1">271</span>:<span class="pl-k">struct</span> <span class="pl-en">plus_asymmetric</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::binary_function&lt;T1,T2,T1&gt; {
+  --
+  <span class="pl-c1">280</span>:<span class="pl-k">template </span>&lt;<span class="pl-k">typename</span> T&gt;
+  <span class="pl-c1">281</span>:<span class="pl-k">struct</span> <span class="pl-en">inc</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::unary_function&lt;T,T&gt; {
+  --
+  <span class="pl-c1">288</span>:<span class="pl-k">template </span>&lt;<span class="pl-k">typename</span> T&gt;
+  <span class="pl-c1">289</span>:<span class="pl-k">struct</span> <span class="pl-en">dec</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::unary_function&lt;T,T&gt; {</pre></div>
+
+<p>graph/astar_search.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">48</span>:  <span class="pl-k">template </span>&lt;<span class="pl-k">class</span> <span class="pl-en">Graph</span>, <span class="pl-k">class</span> <span class="pl-en">CostType</span>&gt;
+  <span class="pl-c1">49</span>:  <span class="pl-k">class</span> <span class="pl-en">astar_heuristic</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::unary_function&lt;</pre></div>
+
+<p>graph/detail/geodesic.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">84</span>:    <span class="pl-k">template </span>&lt;<span class="pl-k">typename</span> T&gt;
+  <span class="pl-c1">85</span>:    <span class="pl-k">struct</span> <span class="pl-en">maximize</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::binary_function&lt;T, T, T&gt;
+  --
+  <span class="pl-c1">95</span>:    <span class="pl-k">template </span>&lt;<span class="pl-k">typename</span> T&gt;
+  <span class="pl-c1">96</span>:    <span class="pl-k">struct</span> <span class="pl-en">reciprocal</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::unary_function&lt;T, T&gt;
+  <span class="pl-c1">97</span>:    {
+  <span class="pl-c1">98</span>:        <span class="pl-k">typedef</span> std::unary_function&lt;T, T&gt; function_type;</pre></div>
+
+<p>graph/distributed/crauser_et_al_shortest_paths.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">97</span>:  <span class="pl-k">struct</span> <span class="pl-en">min_in_distance_compare</span>
+  <span class="pl-c1">98</span>:    : std::binary_function&lt;Vertex, Vertex, <span class="pl-k">bool</span>&gt;
+  --
+  <span class="pl-c1">122</span>:  <span class="pl-k">struct</span> <span class="pl-en">min_out_distance_compare</span>
+  <span class="pl-c1">123</span>:    : std::binary_function&lt;Vertex, Vertex, <span class="pl-k">bool</span>&gt;</pre></div>
+
+<p>graph/parallel/algorithm.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">28</span>:  <span class="pl-k">template</span>&lt;<span class="pl-k">typename</span> T&gt;
+  <span class="pl-c1">29</span>:  <span class="pl-k">struct</span> <span class="pl-en">minimum</span> : std::binary_function&lt;T, T, T&gt;
+  --
+  <span class="pl-c1">34</span>:  <span class="pl-k">template</span>&lt;<span class="pl-k">typename</span> T&gt;
+  <span class="pl-c1">35</span>:  <span class="pl-k">struct</span> <span class="pl-en">maximum</span> : std::binary_function&lt;T, T, T&gt;
+  --
+  <span class="pl-c1">40</span>:  <span class="pl-k">template</span>&lt;<span class="pl-k">typename</span> T&gt;
+  <span class="pl-c1">41</span>:  <span class="pl-k">struct</span> <span class="pl-en">sum</span> : std::binary_function&lt;T, T, T&gt;</pre></div>
+
+<p>graph/transitive_closure.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">43</span>:      <span class="pl-k">typename</span> VT = <span class="pl-k">typename</span> TheContainer::value_type &gt;
+  <span class="pl-c1">44</span>:      <span class="pl-k">struct</span> <span class="pl-en">subscript_t</span>:<span class="pl-k">public</span> <span class="pl-en">std</span>::unary_function &lt; ST, VT &gt;</pre></div>
+
+<p>icl/functors.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">22</span>:    <span class="pl-k">template </span>&lt;<span class="pl-k">typename</span> Type&gt; <span class="pl-k">struct</span> <span class="pl-en">identity_based_inplace_combine</span> 
+  <span class="pl-c1">23</span>:        : public std::binary_function&lt;Type&amp;, <span class="pl-k">const</span> Type&amp;, <span class="pl-k">void</span>&gt;
+  --
+  <span class="pl-c1">29</span>:    <span class="pl-k">template </span>&lt;<span class="pl-k">typename</span> Type&gt; <span class="pl-k">struct</span> <span class="pl-en">unit_element_based_inplace_combine</span> 
+  <span class="pl-c1">30</span>:        : public std::binary_function&lt;Type&amp;, <span class="pl-k">const</span> Type&amp;, <span class="pl-k">void</span>&gt;</pre></div>
+
+<p>icl/type_traits/predicate.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">22</span>:    <span class="pl-k">template </span>&lt;<span class="pl-k">class</span> <span class="pl-en">Type</span>&gt;
+  <span class="pl-c1">23</span>:    <span class="pl-k">class</span> <span class="pl-en">property</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::unary_function&lt;Type,<span class="pl-k">bool</span>&gt;{};
+  --
+  <span class="pl-c1">37</span>:    <span class="pl-k">template </span>&lt;<span class="pl-k">class</span> <span class="pl-en">LeftT</span>, <span class="pl-k">class</span> <span class="pl-en">RightT</span>&gt;
+  <span class="pl-c1">38</span>:    <span class="pl-k">class</span> <span class="pl-en">relation</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::binary_function&lt;LeftT,RightT,<span class="pl-k">bool</span>&gt;{};</pre></div>
+
+<p>interprocess/indexes/iunordered_set_index.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">91</span>:    <span class="pl-k">struct</span> <span class="pl-en">hash_function</span>
+  <span class="pl-c1">92</span>:      : std::unary_function&lt;value_type, std::<span class="pl-c1">size_t</span>&gt;</pre></div>
+
+<p>interprocess/indexes/unordered_map_index.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">56</span>:    <span class="pl-k">struct</span> <span class="pl-en">hasher</span>
+  <span class="pl-c1">57</span>:      : std::unary_function&lt;key_type, std::<span class="pl-c1">size_t</span>&gt;</pre></div>
+
+<p>iostreams/chain.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">294</span>:    <span class="pl-k">struct</span> <span class="pl-en">closer</span>  : <span class="pl-k">public</span> <span class="pl-en">std</span>::unary_function&lt;streambuf_type*, <span class="pl-k">void</span>&gt;  {</pre></div>
+
+<p>mpi/operations.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">57</span>:<span class="pl-k">template</span>&lt;<span class="pl-k">typename</span> T&gt;
+  <span class="pl-c1">58</span>:<span class="pl-k">struct</span> <span class="pl-en">maximum</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::binary_function&lt;T, T, T&gt;
+  --
+  <span class="pl-c1">74</span>:<span class="pl-k">template</span>&lt;<span class="pl-k">typename</span> T&gt;
+  <span class="pl-c1">75</span>:<span class="pl-k">struct</span> <span class="pl-en">minimum</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::binary_function&lt;T, T, T&gt;
+  --
+  <span class="pl-c1">92</span>:<span class="pl-k">template</span>&lt;<span class="pl-k">typename</span> T&gt;
+  <span class="pl-c1">93</span>:<span class="pl-k">struct</span> <span class="pl-en">bitwise_and</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::binary_function&lt;T, T, T&gt;
+  --
+  <span class="pl-c1">109</span>:<span class="pl-k">template</span>&lt;<span class="pl-k">typename</span> T&gt;
+  <span class="pl-c1">110</span>:<span class="pl-k">struct</span> <span class="pl-en">bitwise_or</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::binary_function&lt;T, T, T&gt;
+  --
+  <span class="pl-c1">126</span>:<span class="pl-k">template</span>&lt;<span class="pl-k">typename</span> T&gt;
+  <span class="pl-c1">127</span>:<span class="pl-k">struct</span> <span class="pl-en">logical_xor</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::binary_function&lt;T, T, T&gt;
+  --
+  <span class="pl-c1">144</span>:<span class="pl-k">template</span>&lt;<span class="pl-k">typename</span> T&gt;
+  <span class="pl-c1">145</span>:<span class="pl-k">struct</span> <span class="pl-en">bitwise_xor</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::binary_function&lt;T, T, T&gt;</pre></div>
+
+<p>msm/back/bind_helpers.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">20</span>:    <span class="pl-k">struct</span> <span class="pl-en">plus2</span>
+  <span class="pl-c1">21</span>:        : public std::binary_function&lt;_Ty, _Tz, _Ty&gt;</pre></div>
+
+<p>numeric/conversion/detail/converter.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">452</span>:  <span class="pl-k">template</span>&lt;<span class="pl-k">class</span> <span class="pl-en">Traits</span>&gt;
+  <span class="pl-c1">453</span>:  <span class="pl-k">struct</span> <span class="pl-en">trivial_converter_impl</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::unary_function&lt;  BOOST_DEDUCED_TYPENAME Traits::argument_type
+  --
+  <span class="pl-c1">473</span>:  <span class="pl-k">template</span>&lt;<span class="pl-k">class</span> <span class="pl-en">Traits</span>,<span class="pl-k">class</span> <span class="pl-en">RangeChecker</span>,<span class="pl-k">class</span> <span class="pl-en">RawConverter</span>,<span class="pl-k">class</span> <span class="pl-en">Float2IntRounder</span>&gt;
+  <span class="pl-c1">474</span>:  <span class="pl-k">struct</span> <span class="pl-en">rounding_converter</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::unary_function&lt;  BOOST_DEDUCED_TYPENAME Traits::argument_type
+  --
+  <span class="pl-c1">503</span>:  <span class="pl-k">template</span>&lt;<span class="pl-k">class</span> <span class="pl-en">Traits</span>,<span class="pl-k">class</span> <span class="pl-en">RangeChecker</span>,<span class="pl-k">class</span> <span class="pl-en">RawConverter</span>&gt;
+  <span class="pl-c1">504</span>:  <span class="pl-k">struct</span> <span class="pl-en">non_rounding_converter</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::unary_function&lt; BOOST_DEDUCED_TYPENAME Traits::argument_type</pre></div>
+
+<p>polygon/detail/boolean_op_45.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">153</span>:    <span class="pl-k">class</span> <span class="pl-en">lessScan45ElementRise</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::binary_function&lt;Scan45Element, Scan45Element, <span class="pl-k">bool</span>&gt; {
+  --
+  <span class="pl-c1">460</span>:      <span class="pl-k">class</span> <span class="pl-en">lessScan45Point</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::binary_function&lt;<span class="pl-c1">Point</span>, <span class="pl-c1">Point</span>, <span class="pl-k">bool</span>&gt; {</pre></div>
+
+<p>polygon/detail/max_cover.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">39</span>:    <span class="pl-k">class</span> <span class="pl-en">lessEdgeAssociation</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::binary_function&lt;<span class="pl-k">const</span> EdgeAssociation&amp;, <span class="pl-k">const</span> EdgeAssociation&amp;, <span class="pl-k">bool</span>&gt; {</pre></div>
+
+<p>polygon/detail/polygon_arbitrary_formation.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">25</span>:    <span class="pl-k">class</span> <span class="pl-en">less_point</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::binary_function&lt;<span class="pl-c1">Point</span>, <span class="pl-c1">Point</span>, <span class="pl-k">bool</span>&gt; {
+  --
+  <span class="pl-c1">267</span>:    <span class="pl-k">class</span> <span class="pl-en">less_half_edge</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::binary_function&lt;half_edge, half_edge, <span class="pl-k">bool</span>&gt; {
+  --
+  <span class="pl-c1">764</span>:    <span class="pl-k">class</span> <span class="pl-en">less_vertex_half_edge</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::binary_function&lt;vertex_half_edge, vertex_half_edge, <span class="pl-k">bool</span>&gt; {
+  --
+  <span class="pl-c1">1198</span>:    <span class="pl-k">class</span> <span class="pl-en">less_half_edge_count</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::binary_function&lt;vertex_half_edge, vertex_half_edge, <span class="pl-k">bool</span>&gt; {
+  --
+  <span class="pl-c1">1216</span>:    <span class="pl-k">class</span> <span class="pl-en">less_incoming_count</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::binary_function&lt;std::pair&lt;std::pair&lt;std::pair&lt;<span class="pl-c1">Point</span>, <span class="pl-c1">Point</span>&gt;, <span class="pl-k">int</span>&gt;, active_tail_arbitrary*&gt;,</pre></div>
+
+<p>polygon/detail/scan_arbitrary.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">319</span>:    <span class="pl-k">class</span> <span class="pl-en">less_point_down_slope</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::binary_function&lt;<span class="pl-c1">Point</span>, <span class="pl-c1">Point</span>, <span class="pl-k">bool</span>&gt; {</pre></div>
+
+<p>polygon/polygon_traits.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">1186</span>:    <span class="pl-k">class</span> <span class="pl-en">less_point</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::binary_function&lt;<span class="pl-c1">Point</span>, <span class="pl-c1">Point</span>, <span class="pl-k">bool</span>&gt; {</pre></div>
+
+<p>signals2/detail/variadic_arg_type.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">38</span>:      <span class="pl-k">template </span>&lt;<span class="pl-k">typename</span> R, <span class="pl-k">typename</span> T1&gt;
+  <span class="pl-c1">39</span>:        <span class="pl-k">struct</span> <span class="pl-en">std_functional_base</span>&lt;R, T1&gt;: public std::unary_function&lt;T1, R&gt;
+  --
+  <span class="pl-c1">41</span>:      <span class="pl-k">template </span>&lt;<span class="pl-k">typename</span> R, <span class="pl-k">typename</span> T1, <span class="pl-k">typename</span> T2&gt;
+  <span class="pl-c1">42</span>:        <span class="pl-k">struct</span> <span class="pl-en">std_functional_base</span>&lt;R, T1, T2&gt;: public std::binary_function&lt;T1, T2, R&gt;</pre></div>
+
+<p>smart_ptr/owner_less.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">25</span>:    <span class="pl-k">template</span>&lt;<span class="pl-k">typename</span> T, <span class="pl-k">typename</span> U&gt;
+  <span class="pl-c1">26</span>:      <span class="pl-k">struct</span> <span class="pl-en">generic_owner_less</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::binary_function&lt;T, T, <span class="pl-k">bool</span>&gt;</pre></div>
+
+<p>test/utils/basic_cstring/compare.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">78</span>:<span class="pl-k">template</span>&lt;<span class="pl-k">class</span> <span class="pl-en">CharT</span>&gt;
+  <span class="pl-c1">79</span>:<span class="pl-k">class</span> <span class="pl-en">case_ins_less</span> : <span class="pl-k">public</span> <span class="pl-en">std</span>::binary_function&lt;basic_cstring&lt;CharT&gt;,basic_cstring&lt;CharT&gt;,<span class="pl-k">bool</span>&gt;</pre></div>
+
+<p>typeof/std/functional.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">13</span>:BOOST_TYPEOF_REGISTER_TEMPLATE(std::unary_function, <span class="pl-c1">2</span>)
+  <span class="pl-c1">14</span>:BOOST_TYPEOF_REGISTER_TEMPLATE(std::binary_function, <span class="pl-c1">3</span>)</pre></div>
+
+<p>utility/compare_pointees.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">35</span>:<span class="pl-k">template</span>&lt;<span class="pl-k">class</span> <span class="pl-en">OptionalPointee</span>&gt;
+  <span class="pl-c1">36</span>:<span class="pl-k">struct</span> <span class="pl-en">equal_pointees_t</span> : std::binary_function&lt;OptionalPointee,OptionalPointee,<span class="pl-k">bool</span>&gt;
+  --
+  <span class="pl-c1">58</span>:<span class="pl-k">template</span>&lt;<span class="pl-k">class</span> <span class="pl-en">OptionalPointee</span>&gt;
+  <span class="pl-c1">59</span>:<span class="pl-k">struct</span> <span class="pl-en">less_pointees_t</span> : std::binary_function&lt;OptionalPointee,OptionalPointee,<span class="pl-k">bool</span>&gt;</pre></div>
+
+<p>xpressive/detail/utility/tracking_ptr.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">114</span>:<span class="pl-k">struct</span> <span class="pl-en">filter_self</span>
+  <span class="pl-c1">115</span>:  : std::unary_function&lt;shared_ptr&lt;Derived&gt;, <span class="pl-k">bool</span>&gt;</pre></div>
+
+<p>xpressive/match_results.hpp:</p>
+
+<div class="highlight highlight-source-c++"><pre>  <span class="pl-c1">1356</span>:<span class="pl-k">struct</span> <span class="pl-en">regex_id_filter_predicate</span>
+  <span class="pl-c1">1357</span>:  : std::unary_function&lt;match_results&lt;BidiIter&gt;, <span class="pl-k">bool</span>&gt;</pre></div>
+      </section>
+    </div>
+    <footer>
+      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
+    </footer>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>

@@ -1,0 +1,1617 @@
+= Links To Examples Of Best Practice For C++ 11/14 Libraries =
+
+''first edition written by [http://www.nedprod.com/ Niall Douglas] May 2015. This article may have become out of date since then.''
+
+||= Note =|| **The views and opinions expressed in this article are those of its author(s). This article does not reflect the official policy nor position of Boost, nor necessarily any Boost library author, library maintainer, or community member.** ||
+
+As part of preparing my [http://cppnow.org/ C++ Now] 2015 presentation "[https://docs.google.com/presentation/d/1badtN7A4lMzDl5i098SHKvlWsQY-tsVcutpq_UlRmFI/pub?start=false&loop=false&delayms=3000 A review of C++ 11/14 only Boost libraries]" I examined ten C++ 11/14 mandatory libraries heading towards Boost which in May 2015 were:
+
+||= Name          =||= Authors                                 =||= Min C++ =||= Boost headers required =||= Entered Boost peer review queue =||= Description =||= Repository =||
+|| Boost.Fiber     || Oliver Kowalke                            ||  14       ||	 Context, Config         ||  Conditionally accepted     || a framework for micro-/userland-threads (fibers) scheduled cooperatively || https://github.com/olk/boost-fiber ||
+|| Boost.AFIO      || Niall Douglas, Paul Kirth                 ||  11       ||  none                    ||  2013-10                    || strongly ordered portable asynchronous filesystem and file i/o extending ASIO || https://github.com/BoostGSoC13/boost.afio ||
+|| Boost.DI        || Krzysztof Jusiak                          ||  14       ||  none                    ||  2015-01                    || provides compile time, macro free constructor dependency injection || https://github.com/krzysztof-jusiak/di ||
+|| Boost.Hana      || Louis Dionne                              ||  14       ||  none                    ||  2015-04                    || functional programming in C++ based around transformations of heterogeneous collections of types. || https://github.com/ldionne/hana ||
+|| Boost.Http      || Vinícius dos Santos Oliveira              ||  11       ||  asio, filesystem, system, datetime, utility ||  2015-04  || create applications that need to expose services through HTTP || https://github.com/BoostGSoC14/boost.http ||
+|| Boost.APIBind   || Niall Douglas                             ||  11       ||  none                    ||  not submitted yet          || toolkit for modularizing Boost libraries, managing versioned API and ABI dependency binds, makes it easy for Boost libraries to switch between use of the C++ 11 STL and the Boost STL || https://github.com/ned14/Boost.BindLib ||
+|| Boost.Expected  || Pierre Talbot, Vicente J. Botet Escriba   ||  11       ||  none                    ||  not submitted yet          || category and functional programming in C++ based around the monadic expected<T, E> || https://github.com/ptal/expected ||
+|| Boost.Tick      || Paul Fultz II                             ||  11       ||	 none                    ||  not submitted yet          || trait introspection and concept creator for C++11 || https://github.com/pfultz2/Tick ||
+|| Boost.Fit       || Paul Fultz II                             ||  11       ||  none                    ||  not submitted yet          || provides utilities for functions and function objects || https://github.com/pfultz2/Fit ||
+|| Boost.Sqlpp11   || Roland Bock                               ||  11       ||  none                    ||  not submitted yet          || A type safe embedded domain specific language for SQL queries and results in C++ || https://github.com/rbock/sqlpp11 ||
+
+There was very significant divergence in best practices between these libraries at the time of examination, and moreover the divergences were uneven possibly reflecting an uneven understanding of what best practice might be in C++ 11/14. Thence from my examination I have prepared the list below of what I felt were best practices in C++ 11/14 mandatory libraries with hyperlinks to the relevant source code files in the relevant libraries above. As what a "best practice" is or is not may vary according to opinion, I have attempted to provide a rationale for each of the suggestions below. It is up to library authors to weigh each suggestion and to decide whether to apply it, or not, to their library.
+
+One of the most strikingly consistent features of these new libraries is the lack of dependence on Boost, even to the extent of not using the boost namespace as well as no Boost at all. The big advantage of this is modularity, so almost all of these libraries can be used standalone which is an oft requested feature by Boost end users. However this form of standalone modularity is more a case of ivory tower syndrome than good design, and is therefore likely not sustainable as more C++ 11/14 libraries become useful to other C++ 11/14 libraries and coupling therefore increases. I therefore dedicate significant effort below into how to most flexibly couple your library to other libraries to leave options open, the techniques for which have very significantly diversified in C++ 11.
+
+One will note that the list below is much more C++ 11/14 focused than Boost focused. This is because it is derived from the first crop of C++ 11/14 mandatory Boost libraries. This is not a handbook for writing Boost libraries or even C++ 11/14 Boost libraries, if you want that [http://www.boost.org/development/requirements.html first start reading here] (note some of the guidelines on that page don't really apply to C++ 11/14 libraries) and [http://rrsd.com/blincubator.com/requirements/ then read here] and [http://rrsd.com/blincubator.com/advice/ here].
+
+I have tried to keep these points generic to all C++ 11/14 libraries in the hope that they are useful far outside Boost. I have also ordered them with what I consider the most important ("strongly consider") first and not as important ("consider") later.
+
+
+[[PageOutline]]
+
+== 1. CONVENIENCE: Strongly consider using git and [https://github.com/ GitHub] to host a copy of your library and its documentation ==
+
+There are many source code control systems, with subversion and CVS being the two most recently popular of yesteryear. Probably the current most popular source code control system is Git, and despite its (Mingw i.e. non-native) port on Microsoft Windows being a bit flaky, it is very useful once mastered.
+
+There is less widespread consensus about where to host your git repositories, with the most popular by far being github which is a proprietary service run by a profit making company. Nevertheless, one often hears strong arguments in favour of gitlab, bitbucket and many other alternatives.
+
+All the Boost libraries are on github, as are all the libraries I reviewed. The huge advantage of github over all others is that the free tooling exampled below integrates easily with github. Choosing github therefore makes your life much easier. Note that as git is a distributed source code control system, you can keep a canonical master copy anywhere and write a script which autorefreshes the github copy, thus triggering any of the free tooling you have integrated there. In other words, don't necessarily place all your eggs in the github basket, and consider making github simply a medium for conveniently triggering the free tooling.
+
+Github also provides free website hosting for HTML. Have a script automatically generate documentation and commit it to the gh-pages branch in your normal repo. This should present a copy of your HTML at !http:// ''username''.github.io/''repository''.
+
+This is the script which generates the documentation for [http://boostgsoc13.github.io/boost.afio/ proposed Boost.AFIO], and indeed you can see the exact output generated by this script at http://boostgsoc13.github.io/boost.afio/. You may find it useful.
+
+{{{
+cd boost-local
+rm -rf libs/afio/doc/doxy/doxygen_output/html
+mkdir -p libs/afio/doc/doxy/doxygen_output/html
+cd doc
+../b2 -a ../libs/afio/doc
+cd ../..
+if [ ! -e publish ]; then
+git clone -b gh-pages git@github.com:BoostGSoC13/boost.afio.git publish
+fi
+cd publish
+git reset --hard b1414e11be50ff81124e2e1583f1bbb734ad9ead
+cd ..
+rm -rf publish/*
+mkdir -p publish/doc/html
+cp -a boost-local/doc/html/afio* publish/doc/html/
+cp -a doc/src publish/doc/
+cp -a doc/src/images/boost.png publish/
+cp -af boost-local/doc/src publish/doc/
+mkdir -p publish/libs/afio/doc
+cp -a doc/* publish/libs/afio/doc/
+cd boost-local/libs/afio/doc/doxy
+doxygen
+cd ../../../../../publish
+cp -a ../boost-local/libs/afio/doc/doxy/doxygen_output/html .
+cp -a ../Readme.md .
+cp -a ../Readme.md Readme.html
+echo '<html><head><title>Boost.AFIO documentation</title><meta http-equiv="refresh" content="300"/><body>
+<h1>Boost.AFIO documentation</h1>
+<p><a href="doc/html/afio.html">BoostBook format documentation</a></p>
+<p><a href="html/index.html">Doxygen format documentation</a></p>
+<p><a href="afio-stable.tar.bz2">Ready to go stable AFIO distribution with all git submodules (from master branch)</a></p>
+<p></p>' > index.html
+cat Readme.md | tail -n +4 >> index.html
+echo '
+</body></html>' >> index.html
+git add .
+git commit -a -m 'SHA stamp by Jenkins as building correctly' || true
+git push -f
+}}}
+
+Some may wonder what the hard git reset to a SHA is for. This prevents the gh-pages branch continuously growing in storage by breaking history for the branch, and therefore making git clone times grow excessively. As the branch is purely for HTML publishing, breaking history like this is safe.
+
+An example of using Travis to build the documentation is at https://github.com/krzysztof-jusiak/di/blob/cpp14/.travis.yml, specifically the line:
+
+{{{
+  - if [ "${TRAVIS_BRANCH}" == "cpp14" ] && [ "${DOCUMENTATION}" != "" ]; then (travis_wait travis_retry wget --quiet http://sourceforge.net/projects/boost/files/boost/1.58.0/${BOOST}.tar.gz && tar zxf ${BOOST}.tar.gz && mkdir ${BOOST}/libs/di && cp -r example build doc ${BOOST}/libs/di && sudo apt-get install xsltproc && cd ${BOOST}/libs/di/doc && ../build/b2 -sBOOST_ROOT=../build && git clone https://github.com/krzysztof-jusiak/di.git && cd di && git checkout -b gh-pages --track origin/gh-pages && git reset --hard && rm -rf boost/libs/di/doc/html cpp14/boost/libs/di/doc/html && cp -r ../html boost/libs/di/doc && cp -r ../html cpp14/boost/libs/di/doc && git add -A . && git commit -am "doc regeneration" && git push --force --quiet "https://${GH_TOKEN}@github.com/krzysztof-jusiak/di"); fi
+}}}
+
+Other examples of libraries which use github for their documentation:
+
+* https://olk.github.io/libs/fiber/doc/html/
+* https://boostgsoc13.github.io/boost.afio/
+* https://krzysztof-jusiak.github.io/di/boost/libs/di/doc/html/
+* https://boostgsoc14.github.io/boost.http/
+
+=== 1a. Free github tooling ===
+
+Free (for public open source) tooling for github in order of recommendation:
+
+1. [http://www.appveyor.com/ Appveyor] which provides per-commit unit testing and pull request and commit reporting for Microsoft Windows. Supports all recent versions of MSVC and Mingw. See below a howto.
+2. [https://travis-ci.org/ Travis] which provides per-commit unit testing and pull request and commit reporting for Linux and OS X. See below a howto.
+3. [https://coveralls.io/ Coveralls] which provides unit test line coverage visualisation and lack of coverage problems in pull requests. See below a howto.
+4. [https://reviewable.io/ Reviewable] extends Github pull requests with gerrit-like code reviews of pull requests. You can configure rules before merges are allowed e.g. two peer review signoff etc. Eliminates the need for a separate gerrit most of the time.
+5. [https://waffle.io/ Waffle] extends Github issues with an Atlassian JIRA-like workflow UI. Makes Github issues far more useful for projects where there is a regular issue open, issue fix and issue close pattern.
+
+
+[[Image(http://www.nedprod.com/feed/MuutBadge.php?path=/cppbestpractice/strongly-consider-using-git,link=https://muut.com/cppbestpractice/#!/strongly-consider-using-git,alt=Comments)]]
+
+
+== 2. COUPLING: Strongly consider versioning your library's namespace using inline namespaces and requesting users to alias a versioned namespace instead of using it directly ==
+
+C++ 11 adds a new feature called inline namespaces which are far more powerful than they first appear:
+
+{{{#!c++
+namespace boost { namespace afio { inline namespace v1 { /* stuff */ } } }
+// Stuff is generated at the ABI link layer in boost::afio::v1
+// But to the compiler everything boost::afio::v1::* appears identically in boost::afio::*
+// INCLUDING for ADL and overload resolution
+// In other words you can declare your code in boost::afio::v1, and use it as if declared in boost::afio.
+
+// The other important C++ feature here is namespace aliasing, so
+namespace local { namespace afio = boost::afio; /* use afio::* and it all works */ }
+}}}
+
+The reason this pattern is so useful is because it greatly eases the lives of your end users and you the library maintainer in years to come when you need to break API compatibility. Let's take a case example: imagine the situation typical in 03 C++ libraries where library Boost.Foo uses dependent library Boost.AFIO:
+
+{{{#!c++
+namespace boost { namespace afio {
+  struct foo {
+    static void api(int i, double f);
+  };
+} }
+...
+namespace boost { namespace foo {
+  boost::afio::api(1, 2);
+} }
+}}}
+
+Imagine that you now release an API breaking refactor of Boost.AFIO, which would look like this:
+
+{{{#!c++
+namespace boost { namespace afio {
+  struct foo {
+    static void api(double f, int i);  // Oh dear, f and i have been swapped!
+  };
+} }
+...
+namespace boost { namespace foo {
+  boost::afio::api(1, 2);  // This is probably now a bug!
+} }
+}}}
+
+The users of Boost.Foo which uses boost::afio::foo::api() now finds that their library no longer passes its unit testing because foo::api() has changed from before. They will quite rightly throw up a fuss, and under Boost's present rules you will be asked to roll back your refactor until Boost.Foo has also been refactored to match your refactor. This causes inconvenience for you the maintainer of Boost.AFIO, the maintainer of Boost.Foo, and is a general pain for users. It also breaks modularity, increases coupling between libraries in a way which saddles you the maintainer of Boost.AFIO with the lack of maintenance or failure of timely maintenance of libraries dependent on AFIO, and I can't strongly enough recommend you don't blindly copy the 03 idiom of suggesting client code use your library directly using fully qualified namespacing.
+
+The good news is we can make all this go away with inline namespaces and namespace aliasing, so consider this pattern instead:
+
+{{{#!c++
+namespace boost { namespace afio { inline namespace v1 {
+  struct foo {
+    static void api(int i, double f);
+  };
+} } }
+...
+namespace boost { namespace foo {
+  // Probably somewhere in this library's config.hpp
+  namespace afio = boost::afio;  // This is the key use change which needs to be strongly recommended to your library's users
+  ...
+  // In implementation code after config.hpp
+  afio::api(1, 2);  // Note the no longer fully qualified use of afio. The local namespace alias is used to "symlink" to "the latest" version of Boost.AFIO
+} }
+}}}
+
+Now imagine your refactor occurs as before:
+
+{{{#!c++
+namespace boost { namespace afio {
+  // Probably defined by boost/afio.hpp which in turn includes boost/afio_v2.hpp
+  inline namespace v2 {
+    struct foo {
+      static void api(double f, int i);  // new implementation
+    };
+  }
+  // Probably defined by boost/afio_v1.hpp
+  namespace v1 {
+    struct foo {
+      static void api(int i, double f);  // old implementation
+    };
+  }
+} }
+...
+namespace boost { namespace foo {
+  // Probably somewhere in this library's config.hpp
+  namespace afio = boost::afio::v1;  // By changing this one single line we "fix" the problem. Earlier we included <boost/afio_v1.hpp> instead of <boost/afio.hpp>.
+  ...
+  // In implementation code after config.hpp
+  afio::api(1, 2);  // And this finds the v1 AFIO implementation, not the v2 implementation
+} }
+}}}
+
+What have we just achieved?
+
+1. Library Boost.Foo dependent on Boost.AFIO no longer requires lots of refactoring work if Boost.AFIO is refactored. Just two lines changed in its config.hpp, something easy for the release managers to do.
+2. Library Boost.AFIO can now be evolved far quicker than before, and simply keep shipping entire copies of legacy versions without problems with colliding namespaces. As end users get round to upgrading, legacy versions can be removed from the distro after a period of warning.
+
+What are the problems with this technique?
+
+1. You now need to ship multiple copies of your library, maintain multiple copies of your library, and make sure simultaneous use of multiple library versions in the same executable doesn't conflict. I suspect this cost is worth it for the added flexibility to evolve breaking changes for most library maintainers. You probably want to employ a per-commit run of http://ispras.linuxbase.org/index.php/ABI_compliance_checker to make sure you don't accidentally break the API (or ABI where appropriate) of a specific API version of your library, so in your custom build run you might check out an original SHA for your library separate to your latest commit, build both and use the ABI compliance checker tool to determine if anything has broken. Similarly, the same toolset (ABIDump) could be used to detect where ABIs collide by having some shell script error out if any ABI overlaps between two libraries, perhaps using the diff tool.
+
+ Also don't forget that git lets you recursively submodule yourself but pinned to a different branch by [https://git-scm.herokuapp.com/docs/gitmodules adding the `submodule.name.branch` stanza to .gitmodules], so if you do ship multiple versions you can mount specific version tracking branches of yourself within yourself such that a recursive submodule update checks out all the versions of yourself into a given checkout.
+2. The above technique alone is insufficient for header only end users where multiple versions of your library must coexist within the same translation unit. This is because almost every library header will have include guards, and these will prevent end users including alternative versions of your library within the same translation unit, even though those do not conflict at a C++ level due to having different namespaces. There is an additional problem in that most library headers define macros which will collide when you include multiple versions and may have (breaking) different values which induce misoperation. To this you can take a manual approach, and make sure that the header file for each version of your library has its own header guards and all macros are undefined on exit from a header. Or you can make use of another recommendation below which uses C preprocessor metaprogramming to automate header guard management for you.
+3. Many end users are not used to locally aliasing a library namespace in order to use it, and may continue to directly qualify it using the 03 idiom. You may consider defaulting to not using an inline namespace for the version to make sure users don't end up doing this in ways which hurt themselves, but that approach has both pros and cons.
+
+Some fun extra things this technique enables:
+
+1. Something not so obvious above is that you can also ''stub out'' fake copies of dependencies where that dependency is missing in the current config. For example, imagine optional compression support where your config.hpp either namespace aliases to boost::foo::compression either a real compression library, or an internal stub copy which actually does nothing. Your code is then written to assume a compression library aliased at boost::foo::compression and need not consider if it's actually there or not. The advantages here for reducing coupling are very obvious. This is covered in a separate recommendation below.
+2. This technique is highly extensible to allow ''dependency injection'' of STL11 vs Boost on a per-feature basis e.g. your user wants Boost.Thread instead of STL11 thread but only for threading, so your library can be so modular as to allow both options to end users. This is covered in a separate recommendation below.
+
+Examples of libraries which use versioned namespaces and aliasing to bind a namespace locally:
+
+* https://boostgsoc13.github.io/boost.afio/
+
+
+[[Image(http://www.nedprod.com/feed/MuutBadge.php?path=/cppbestpractice/strongly-consider-versionin,link=https://muut.com/cppbestpractice/#!/strongly-consider-versionin,alt=Comments)]]
+
+
+== 3. PORTABILITY: Strongly consider trying your library on Microsoft Visual Studio 2015 ==
+
+More than half the libraries reviewed had no support for Microsoft Visual Studio, and only supported GCC and clang. When the authors were asked why, in many cases it was simply assumed that MSVC didn't implement much C++ 11/14 and the authors hadn't attempted MSVC support.
+
+This is in fact untrue. Here is a complete list of C++ 11/14 features which VS2015 does '''NOT''' support (everything else you can assume it supports, including a full and complete C++ 14 STL):
+
+* Expression SFINAE (there are workarounds. Note the STL "turns on" magic Expression SFINAE support for those parts of the STL requiring it, so any Expression SFINAE done by the STL for you works as expected).
+* Any serious constexpr use (try "#define constexpr" i.e. disable it completely. Most of the time your code will compile and work. Consider using a `BOOST_LIBNAME_CONSTEXPR` macro thereafter). It is claimed by Microsoft that full C++ 11 constexpr conformance is present, but to be honest in my own code I don't find anything less than C++ 14 constexpr useful in practice.
+* No two phase lookup. Reordering decls to make the compiler look up in a way which doesn't produce non-conforming outcomes is a straightforward, if annoying, workaround.
+* MSVC's C99 support is still less than complete, but it's significantly more complete than before.
+* MSVC's preprocessor is still non-conforming, but it's less broken than it has ever been.
+* Variable templates.
+* Non-static data member initialisers for aggregates.
+
+VS2015 is a very highly conforming C++ 11/14 compiler. It meets or exceeds clang 3.3 on every C++ 11/14 feature, so if your library can be compiled by clang 3.3 then it is highly likely it should compile, without too much work, on VS2015 assuming the missing items above are not showstoppers. VS2015 even has some support for C++ 1z (C++ 17) matching about what clang 3.5 provides minus C++ 14 relaxed constexpr and C++ 14 variable templates. See http://blogs.msdn.com/b/vcblog/archive/2015/04/29/c-11-14-17-features-in-vs-2015-rc.aspx.
+
+I am not claiming that you won't get surprises when you try getting MSVC to compile your code which you thought was standards compliant. MSVC is not an AST based compiler and uses heuristics to trigger partial local AST compilation, and therefore has a unique processing model which exposes your assumptions about what you think or thought is valid C++. This is exactly why it is worthwhile getting your C++ 11/14 library working on MSVC because you will get a better quality, more standards conforming C++ library out of it.
+
+A good example of just how much C++ 14 support VS2015 provides is in Boost.DI. When I first contacted the author about the lack of VS2015 support, he proceeded to port his entirely C++ 14 codebase to VS2015 successfully, though he had to do a bit of refactoring to make the port work. Interestingly because he didn't push constexpr use past C++ 11 capacity in DI, VS2015's constexpr support was enough for DI to work as expected on VS2015 for the most part.
+
+* https://krzysztof-jusiak.github.io/di/boost/libs/di/doc/html/
+
+
+[[Image(http://www.nedprod.com/feed/MuutBadge.php?path=/cppbestpractice/strongly-consider-trying-yo,link=https://muut.com/cppbestpractice/#!/strongly-consider-trying-yo,alt=Comments)]]
+
+
+== 4. QUALITY: Strongly consider using free CI per-commit testing, even if you have a private CI ==
+
+Despite that [https://travis-ci.org/ Travis] provides free of cost per-commit continuous integration testing for Linux and OS X, and that [http://www.appveyor.com/ Appveyor] provides the same for Microsoft Windows, there were still libraries in those reviewed which made use of neither and furthermore had no per-commit CI testing whatsoever.
+
+I'll be blunt: not having per-commit CI testing is '''unacceptable''' in this modern day and age and is an excellent sign of a library author not committed to software quality. Especially when such CI services are free of cost, and it's purely your laziness that you haven't configured them yet.
+
+So first things first, if your C++ 11/14 library is not using any form of per-commit testing yet, '''go add Travis and Appveyor right support now'''. Configuration is extremely easy if your project lives on Github, simply login into both services using your github account and enable your project. Next add a suitable .travis.yml and an .appveyor.yml file to the root of your project, and push the commit. Watch Travis and Appveyor build and run your CI suitable unit test suite, and report back on Github (especially if it's a pull request) whether the build and tests passed or failed. From now on when someone issues a pull request fixing a bug, you'll instantly know if that pull request compiles and passes all unit tests on Linux, OS X and Windows, and much more importantly, ''so will the pull request submitter'' and they usually will go fix problems themselves so you the maintainer never need find out a pull request is defective on some build target.
+
+Example travis.yml's to clone from:
+
+* https://github.com/krzysztof-jusiak/di/blob/cpp14/.travis.yml
+* https://github.com/BoostGSoC13/boost.afio/blob/master/.travis.yml
+
+Example appveyor.yml's to clone from:
+
+* https://github.com/krzysztof-jusiak/di/blob/cpp14/.appveyor.yml
+* https://github.com/BoostGSoC13/boost.afio/blob/master/appveyor.yml
+
+Both Travis and Appveyor are excellent for getting an immediate 90% confidence signal that some commit did not break something. For a free service with little configuration effort that's fantastic. However if you want a 99% confidence signal you will need to spend a few months of your life configuring your own [https://jenkins-ci.org/ Jenkins CI installation] probably best placed on its own dedicated server given the RAM you'll need (I suggest [http://www.kimsufi.com/us/en/ a cheap OVH dedicated server] with at least 16Gb of RAM for about €15/month or US$20/month), most of that time will be learning how ''not'' to configure Jenkins as Jenkins is a black, black art indeed - but again great for being free of cost given the return on investment. Once mastered, Jenkins can do almost anything from per-commit testing to soak testing to input fuzz testing to automating a long list of tasks for you (e.g. diffing and synchronising two forks of a repo for you by bisecting commit histories against unit testing), but it '''will''' take many dedicated months to acquire the skills to configure a maintainable and stable Jenkins install.
+
+Should you add Travis and Appveyor CI support if you already are using your own private Jenkins CI?
+
+I think the answer is uncategorically yes. The reasons are these:
+
+1. Having Travis + Appveyor badges (see https://raw.githubusercontent.com/krzysztof-jusiak/di/cpp14/README.md for example Markdown for badges) on your open source project is a universally recognised signal of attention to quality.
+2. Other free tooling such as [https://coveralls.io/ Coveralls.io] have built in integration for github and travis. Hooking Jenkins into Coveralls isn't hard, but it "just works" with Travis instead and that's a similar pattern with most free tooling which consumes CI results.
+3. Future tooling by Boost which dashboards Boost libraries and/or ranks libraries by a quality score will almost certainly automate on Travis and Appveyor being queryable by their RESTful APIs. In other words, placing your library in Github and adding Travis and Appveyor CI support has the highest chance of working immediately with any future Boost tooling with minimal additional effort by you.
+
+
+[[Image(http://www.nedprod.com/feed/MuutBadge.php?path=/cppbestpractice/strongly-consider-using-fre,link=https://muut.com/cppbestpractice/#!/strongly-consider-using-fre,alt=Comments)]]
+
+
+== 5. QUALITY: Strongly consider per-commit compiling your code with static analysis tools ==
+
+In Travis and Appveyor it is easy to configure a special build job which uses the clang static analyser and clang lint tools on Linux/OS X and the MSVC static analyser on Windows. These perform lengthy additional static AST analysis tests to detect when your code is doing something stupid and the use of these is an excellent sign that the developer cares about code quality. Static analysis is perfectly suited to be run by a CI as it takes extra time to compile your program, so a CI can trundle off and do the lengthy work itself while you get on with other work.
+
+Enabling Microsoft's static analyser is easy, simply add /analyze to the compiler command line. Your compile will take ten times longer and new warnings will appear. Note though that the MSVC static analyser is quite prone to false positives like miscounting array entries consumed. You can suppress those using the standard #pragma warning(disable: XXX) system around the offending code.
+
+clang comes with two static analysis tools, the static analyser (no false positives) and the lint tool (many false positives), and you should enable both. The clang lint tool is easy, simply call `clang-tidy` albeit with somewhat weird arguments. Enabling clang's static analyser is slightly harder. You'll need to replace the normal call of the compiler with whatever tool is set into the CXX environment variable by the scan-build tool. See http://clang-analyzer.llvm.org/scan-build.html. For Boost projects, I found this script to work well:
+
+{{{
+MYPWD=`pwd`
+REPORTS="$MYPWD/clangScanBuildReports" 
+rm -rf "$REPORTS"
+git submodule update --init --recursive
+cd boost-local
+cd libs/afio/test
+./test_file_glob.sh
+cd ../../..
+rm -rf clang-tidy-warnings.txt
+clang-tidy-3.7 -checks='*,-google-*,-misc-macro-parentheses,-readability-braces-around-statements,-readability-named-parameter,-llvm-namespace-comment' -header-filter='boost/afio/[^/]*.hpp' libs/afio/test/test_all.cpp -- -DNDEBUG -std=c++11 -I. -Ilibs/afio/test > clang-tidy-warnings.txt
+clang-tidy-3.7 -checks='*,-google-*,-misc-macro-parentheses,-readability-braces-around-statements,-readability-named-parameter,-llvm-namespace-comment' -header-filter='boost/afio/detail/.*.hpp' libs/afio/test/test_all.cpp -- -DNDEBUG -std=c++11 -I. -Ilibs/afio/test >> clang-tidy-warnings.txt
+cat clang-tidy-warnings.txt
+if [ -s clang-tidy-warnings.txt ]; then exit 1; fi
+/usr/share/clang/scan-build-3.7/scan-build --use-analyzer=/usr/bin/clang-3.7 -o "$REPORTS" ./b2 toolset=gcc-4.8 libs/afio/test -a --test=test_all.cpp --link-test
+}}}
+
+Note that my b2 has a $HOME/user-config.jam which resets the compiler used to the value of $CXX from the environment:
+
+{{{
+import os ;
+using gcc : : [ os.environ CXX ] ;
+}}}
+
+clang-tidy is quite fast, so I run that first and if it generates anything at all then we halt. You will note I enable all checks minus ones I really don't think important, and because the `-header-filter` regex option doesn't appear to accept negative lookahead I have to whitelist via append into the clang-tidy-warnings.txt file. I found clang-tidy to be very useful indeed for catching silly things like forgetting to put override or final on virtual functions, or forgetting to set noexcept on move constructors and assignment operators, so it's well worth running.
+
+scan-build will run the static analyser and generate a HTML report of the issues found with a pretty graphical display of the logic followed by the analyser into the $REPORTS directory. Jenkins has a plugin which can publish this HTML report for you per build, for other CIs you'll need to copy the generated files onto a website somewhere e.g. committing them to your repo under gh-pages and pushing them back to github.
+
+
+[[Image(http://www.nedprod.com/feed/MuutBadge.php?path=/cppbestpractice/strongly-consider-per-commi,link=https://muut.com/cppbestpractice/#!/strongly-consider-per-commi,alt=Comments)]]
+
+
+== 6. QUALITY/SAFETY: Strongly consider running a per-commit pass of your unit tests under both valgrind and the runtime sanitisers ==
+
+In Travis it is highly worth adding a special build job which runs your unit tests under:
+
+ valgrind memcheck (Linux only):: This detects illegal reads and writes, use of uninit values, use of unaddressable memory, illegal/double frees, and memory leaks. This tool is '''highly''' recommended, with its only downsides being a severe performance penalty (one can detect if running in valgrind inside your tests and treble timeouts. Look into the `RUNNING_ON_VALGRIND` macro in valgrind.h which by the way compiles just fine on MSVC too. You can also markup your code with valgrind instrumentation (also compatible with MSVC) and simply leave the instrumentation permanently in your binaries) and the fact it can't test Windows code.
+
+ Some will argue that their library is a pure constexpr metaprogramming library and does no memory allocation, and therefore running valgrind makes no sense for their library. Ah, but remember that valgrind isn't just testing your code, ''it is testing the code produced by the compiler''. If you are doing cutting edge C++ 14 programming you may trigger code generation bugs in compilers past or future, or bugs in the STL caused by how your code uses it. A valgrind pass on your unit tests will catch bad code generation bugs, and potentially one day save you hours maybe days of frustrating debugging of weird segfaults!
+
+ Running your unit tests under valgrind is easy, simply prepend valgrind when calling your (preferably optimised though with debug info) test executable. You may find special compilation options will greatly improve the usefulness of error output, try `-fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-inline`, though note disabling inlining may hide your bug.
+
+ Undefined behaviour sanitiser (GCC and clang only):: Turned on using `-fsanitize=undefined`, this detects when your code does undefined behaviour, and is sufficiently lightweight you should consider shipping release binaries with this permanently turned on along with stack smashing detection if using GCC 4.9 or later (`-fstack-protector-strong`). I personally have the ubsan always on for all builds of any code of mine capable of accepting untrusted input. At the time of writing, turning on the ubsan will prevent these things happening: use of misaligned pointer or reference, load of bool not 0 nor 1, out of bounds array indexing, bad casting, bad derived cast, bad cast of void* to type, bad or wrong vptr use, use of impossible enum value, divide by zero, bad function pointer call, use of null ptr, use of bytes not in object, exiting a value returning function without a return value, returning null from a function not allowed to return null, illegal shifts, signed integer overflow, reaching unreachable code, negative variable length array use.
+
+ As you can see, these tests make buffer overflow [https://en.wikipedia.org/wiki/Return-oriented_programming ROP chain exploits] very hard, and therefore your code much, much harder to exploit from a security perspective. I think any library author whose library can accept untrusted input who doesn't always turn ubsan on is being '''irresponsible'''.
+
+ Thread sanitiser (GCC and clang only):: If your library is capable of threaded use or your unit testing creates threads, you definitely should soak execute your unit tests with the thread sanitiser (`-fsanitize=thread`) for a few hours per week which provides a good quality check of the correct use of the C11/C++11 atomic memory model e.g. are all your atomic acquires matched with atomic releases in the right order? Did you read a memory location which was written concurrently without an acquire-release serialisation lock? Sadly the tool can't detect use of memory fences which substantially reduces your flexibility when writing with atomics, so do bear that in mind.
+
+Some may note I didn't recommend the address sanitiser (GCC and clang only). This is because I have personally found the better approach to be to design your unit and functional testing to be valgrind friendly, and moreover valgrind is fire-and-forget easy: what problems it reports have the correct information about the cause (if you don't compile all third party libraries with the address sanitiser you can get inaccurate cause reports), and the things it detects (illegal reads and writes, use of uninit values, use of unaddressable memory, illegal/double frees, and memory leaks) are precisely those which are the most common and the ones you definitely need to do per-commit.
+
+However, the address sanitiser is superior to valgrind under these circumstances:
+
+* If you are running on Microsoft Windows (winclang does a great job of slotting into as if MSVC nowadays with only a very few caveats).
+* If the code you are testing cannot be adjusted to execute in a reasonable time under valgrind.
+* If you really do need maximum performance before all else e.g. it is perfect for untrusted input fuzz testing (next section) and I recommend the address sanitiser strongly there.
+* If you suspect you are seeing memory corruption of your stack or your static data as valgrind cannot check these. Personally speaking I haven't found stack corruption goes undetected especially if you have the undefined behaviour sanitiser always turned on (including release builds) and combined with `-fstack-protector-strong`, so in terms of features the only win here is static data corruption in exchange for not detecting use of uninit values. I'd take the latter any day over the former.
+
+
+[[Image(http://www.nedprod.com/feed/MuutBadge.php?path=/cppbestpractice/strongly-consider-running-a,link=https://muut.com/cppbestpractice/#!/strongly-consider-running-a,alt=Comments)]]
+
+
+== 7. SAFETY: Strongly consider a nightly or weekly input fuzz automated test if your library is able to accept untrusted input ==
+
+If your library can consume any form of serialisation or parameters supplied from a network or file or query, including any regular expressions or any type of string ''even if you don't process it yourself'' and hand it off to another library, then you '''need''' to be doing input fuzz testing for a few hours weekly. Even with ubsan enabled in release builds (see previous section) and therefore use of untrusted input to subvert your security is harder, one can use missing code path verification logic to cause programs to delete or replace user data or write into secure data without introducing undefined behaviour.
+
+The classic tool for fuzz testing data inputs is [http://lcamtuf.coredump.cx/afl/ American Fuzzy Lop (afl)]. This is a mature, very well understood tool. You should use it in combination with the runtime sanitisers described above, so ideally with valgrind + ubsan, but if valgrind is too slow then with the address sanitiser + ubsan. You may also wish to consider additionally fuzz testing the parameters of every API in your library, see below for tooling to help with that.
+
+One of the most promising new input fuzz testing tools going into the long term is LLVM's fuzz testing facilities which are summarised at http://llvm.org/docs/LibFuzzer.html as they make use of the clang sanitiser coverage recording facility to additionally find the code paths least covered, plus the tool is very fast compared to afl.
+
+
+[[Image(http://www.nedprod.com/feed/MuutBadge.php?path=/cppbestpractice/strongly-consider-a-nightly,link=https://muut.com/cppbestpractice/#!/strongly-consider-a-nightly,alt=Comments)]]
+
+
+== 8. DESIGN: (Strongly) consider using constexpr semantic wrapper transport types to return states from functions ==
+
+Thanks to constexpr and rvalue refs, C++ 11 codebases have much superior ways of returning states from functions. Let us imagine this C++ 11 function:
+
+{{{#!c++
+// handle_type is some class which takes ownership of a valid file descriptor, closing it on type destruction.
+
+std::shared_ptr<handle_type> openfile(std::filesystem::path path)
+{
+  int fd;
+  while(-1==(fd=::open(path.c_str(), O_RDWR|O_EXCL)) && EINTR==errno);
+  if(-1==fd)
+  {
+    int code=errno;
+    std::error_code ec(code, generic_category());
+    std::string errstr(strerror(code));
+    throw std::system_error(ec, std::move(errstr));
+  }
+  return std::make_shared<handle_type>(fd);
+}
+}}}
+
+This is a highly simplified example, but an extremely common pattern in one form or another: when C++ code calls something not C++ and it returns an error, convert it into an exception and throw it. Else construct and return a RAII holding smart pointer to manage the resource just acquired.
+
+The really nice thing about this highly simple design is that its API nicely matches its semantic meaning: if it succeeds you always get a shared_ptr. If it fails you always get an exception throw. Easy.
+
+Unfortunately, throwing exceptions has unbounded time guarantees due to RTTI lookups, so for any code which worries about complexity guarantees the above is unacceptable: ''throwing exceptions should be exceptional'' as the purists would put it. So traditionally speaking the 03 pattern is to provide an additional overload capable of writing into an error_code, this being the pattern traditionally used by ASIO and most Boost libraries. That way if the error_code taking overload is chosen, you get an error code instead of exception but code is still free to use the always throwing overload above:
+
+{{{#!c++
+std::shared_ptr<handle_type> openfile(std::filesystem::path path, std::error_code &ec)
+{
+  int fd;
+  while(-1==(fd=::open(path.c_str(), O_RDWR|O_EXCL)) && EINTR==errno);
+  if(-1==fd)
+  {
+    int code=errno;
+    ec=std::error_code(code, generic_category());
+    return std::shared_ptr<handle_type>();  // Return a null pointer on error
+  }
+  return std::make_shared<handle_type>(fd);  // This function can't be noexcept as it can throw bad_alloc
+}
+}}}
+
+This pushes the problem of checking for error conditions and interpreting error codes onto the caller, which is okay if a little potentially buggy if the caller doesn't catch all the outcomes. Note that code calling this function must still be exception safe in case bad_alloc is thrown. One thing which is lost however is semantic meaning of the result, so above we are overloading a null shared_ptr to indicate when the function failed which requires the caller to know that fact instead of instantly being able to tell from the API return type. Let's improve on that with a std::optional<T>:
+
+{{{#!c++
+namespace std { using std::experimental; }
+std::optional<std::shared_ptr<handle_type>> openfile(std::filesystem::path path, std::error_code &ec)
+{
+  int fd;
+  while(-1==(fd=::open(path.c_str(), O_RDWR|O_EXCL)) && EINTR==errno);
+  if(-1==fd)
+  {
+    int code=errno;
+    ec=std::error_code(code, generic_category());
+    return std::nullopt;
+  }
+  return std::make_optional(std::make_shared<handle_type>(fd));
+}
+}}}
+
+So far, so good, though note we can still throw exceptions and all of the above worked just fine in C++ 03 as Boost provided an optional<T> implementation for 03. However the above is actually semantically suboptimal now we have C++ 11, because C++ 11 lets us encapsulate far more semantic meaning which is cost free at runtime using a monadic transport like Boost.Expected:
+
+{{{#!c++
+namespace std { using std::experimental; }
+std::expected<std::shared_ptr<handle_type>, std::error_code> openfile(std::filesystem::path path)
+{
+  int fd;
+  while(-1==(fd=::open(path.c_str(), O_RDWR|O_EXCL)) && EINTR==errno);
+  if(-1==fd)
+  {
+    int code=errno;
+    return std::make_unexpected(std::error_code(code, generic_category());
+  }
+  return std::make_shared<handle_type>(fd);
+}
+}}}
+
+The expected outcome is a shared_ptr to a handle_type, the unexpected outcome is a std::error_code, and the catastrophic outcome is the throwing of bad_alloc. Code using `openfile()` can either manually check the expected (its bool operator is true if the expected value is contained, false if the unexpected value) or simply unilaterally call `expected<>.value()` which will throw if the value is unexpected, thus converting the error_code into an exception. As you will immediately note, this eliminates the need for two `openfile()` overloads because the single monadic return based implementation can now perform ''both'' overloads with equal convenience to the programmer. On the basis of halving the number of APIs a library must export, use of expected is a huge win.
+
+However I am still not happy with this semantic encapsulation because it is a poor fit to what opening files actually means. Experienced programmers will instantly spot the problem here: the `open()` call doesn't just return success vs failure, it actually has five outcome categories:
+
+1. Success, returning a valid fd.
+2. Temporary failure, please retry immediately: EINTR
+3. Temporary failure, please retry later: EBUSY, EISDIR, ELOOP, ENOENT, ENOTDIR, EPERM, EACCES (depending on changes on the filing system, these could disappear or appear at any time)
+4. Non-temporary failure due to bad or incorrect parameters: EINVAL, ENAMETOOLONG, EROFS
+5. Catastrophic failure, something is very wrong: EMFILE, ENFILE, ENOSPC, EOVERFLOW, ENOMEM, EFAULT
+
+So you can see the problem now: what we really want is for category 3 errors to only return with error_code, whilst category 4 and 5 errors plus bad_alloc to probably emerge as exception throws (these aren't actually the ideal outcomes, but we'll assume this mapping for the purposes of brevity here). That way the C++ semantics of the function would closely match the semantics of opening files. So let's try again:
+
+{{{#!c++
+namespace std { using std::experimental; }
+std::expected<
+  std::expected<
+    std::shared_ptr<handle_type>,              // Expected outcome
+    std::error_code>,                          // Expected unexpected outcome
+  std::exception_ptr>                          // Unexpected outcome
+openfile(std::filesystem::path path) noexcept  // Note the noexcept guarantee!
+{
+  int fd;
+  while(-1==(fd=::open(path.c_str(), O_RDWR|O_EXCL)) && EINTR==errno);
+  try
+  {
+    if(-1==fd)
+    {
+      int code=errno;
+      // If a temporary failure, this is an expected unexpected outcome
+      if(EBUSY==code || EISDIR==code || ELOOP==code || ENOENT==code || ENOTDIR==code || EPERM==code || EACCES==code)
+        return std::make_unexpected(std::error_code(code, std::generic_category());
+
+      // If a non-temporary failure, this is an unexpected outcome
+      return std::make_unexpected(std::make_exception_ptr(std::system_error(code, std::generic_category(), strerror(code))));
+    }
+    return std::make_shared<handle_type>(fd);
+  }
+  catch(...)
+  {
+    // Any exception thrown is truly unexpected
+    return std::make_unexpected(std::current_exception());
+  }
+}
+}}}
+
+There are some very major gains now in this design:
+
+1. Code calling `openfile()` no longer need to worry about exception safety - all exceptional outcomes are always transported by the monadic expected transport. This lets the compiler do better optimisation, eases use of the function, and leads to few code paths to test which means more reliable, better quality code.
+2. The semantic outcomes from this function in C++ have a close mapping to that of opening files. This means code you write more naturally flows and fits to what you are actually doing.
+3. Returning a monadic transport means you can now program monadically against the result e.g. `value_or()`, `then()` and so on. Monadic programming - if and only if there is no possibility of exception throws - is also a formal specification, so you could in some future world use a future clang AST tool to formally verify the mathematical correctness of some monadic logic if and only if all the monadic functions you call are `noexcept`. That's enormous for C++.
+
+You may have noticed though the (Strongly) in the title of this section being in brackets, and if you guessed there are caveats in the above then you are right. The first big caveat is that the expected<T, E> implementation in Boost.Expected is very powerful and full featured, but unfortunately has a big negative effect on compile times, and that rather ruins it for the majority of people who only need about 10% of what it provides (and would rather like that to be quick to compile). The second caveat is that integration between Expected and Future-Promise especially with resumable functions in the mix is currently poorly defined, and using Expected now almost certainly introduces immediate technical debt into your code that you'll have to pay for later.
+
+The third caveat is that [https://github.com/ned14/boost.spinlock/blob/master/include/boost/spinlock/monad.hpp I have written a much lighter weight monadic result transport] which isn't as flexible as expected<T, E> (and is hard coded to a T, error_code and exception_ptr outcomes) but has negligible effects on compile times, and very deep integration with a forthcoming non-allocating all-constexpr new lightweight future-promise implementation. Once implemented, my monadic transport may be disregarded by the community, evolved more towards expected<T, E>, or something else entirely may turn up. As a quick taster:
+
+{{{#!c++
+using namespace boost::spinlock::lightweight_futures;
+monad<std::shared_ptr<handle_type>> openfile(std::filesystem::path path) noexcept
+{
+  int fd;
+  while(-1==(fd=::open(path.c_str(), 0)) && EINTR==errno);
+  try
+  {
+    if(-1==fd)
+    {
+      int code=errno;
+      // If a temporary failure, this is an expected unexpected outcome
+      if(EBUSY==code || EISDIR==code || ELOOP==code || ENOENT==code || ENOTDIR==code || EPERM==code || EACCES==code)
+        return std::error_code(code, std::generic_category());
+
+      // If a non-temporary failure, this is an unexpected outcome
+      return std::make_exception_ptr(std::system_error(code, std::generic_category(), strerror(code)));
+    }
+    return std::make_shared<handle_type>(fd);
+  }
+  catch(...)
+  {
+    // Any exception thrown is truly unexpected
+    return std::current_exception();
+  }
+}
+}}}
+
+This lightweight monadic implementation generates about 260 x64 opcodes, not enormously more than if the monadic transport were not being used at all. This lightweight monad isn't quite ready for prime time yet though, but should be by August 2015.
+
+In other words, I recommend you very strongly consider ''some'' mechanism for more closely and cleanly matching C++ semantics with what a function does now that C++ 11 makes it possible, but I unfortunately cannot categorically recommend one solution over another at the time of writing.
+
+
+[[Image(http://www.nedprod.com/feed/MuutBadge.php?path=/cppbestpractice/strongly-consider-using-con,link=https://muut.com/cppbestpractice/#!/strongly-consider-using-con,alt=Comments)]]
+
+
+== 9. MAINTENANCE: Consider making it possible to use an XML outputting unit testing framework, even if not enabled by default ==
+
+A very noticeable trend in the libraries reviewed above is that around half use good old C assert() and static_assert() instead of a unit testing framework.
+
+There are many very good reasons not to use a unit testing framework by default, but there are few good reasons to not be able to use a unit testing framework at all. A big problem for the Boost release managers when your library cannot output XML indicating exactly which tests pass and which fail (including the static ones) is that all they get instead is failure to compile or failure to execute. This forces them to dig into compiler error diagnostics and unit test diagnostics respectively. It also makes what may be a very minor problem easily delegated appear as serious as the most serious possible problem because there is no way to quickly disambiguate without diving into potentially a debugger, so all these are good reasons to support some XML outputting unit testing framework which reports an XML entry one per test for each test case in every test suite in your library.
+
+Let me give you an example with Boost.AFIO which executes about a hundred thousand tests for about 70 test platforms and configurations per commit. I once committed a change and noticed in the test matrix that only statically linked libraries were failing. The cause was immediately obvious to me: I had leaked ABI in a way that the unit tests which deliberately build mismatching versions of AFIO to ensure namespace version changes don't conflict had tripped, and without even having to investigate the error itself I knew to revisit my commit for ABI leakage. For someone less familiar with the library, a quick look into the failing test would have revealed the name of the failing test case and instantly realise it was an ABI leakage problem. This sort of extra information is a big win for anyone trying to get a release out the door.
+
+There are big advantages for unit test stability analysis tooling as well. Jenkins CI can record the unit tests for thousands of builds, and if you have a test that regularly but rarely fails then Jenkins can flag such unstable tests. Atlassian tooling free for open source can display unit test aggregate statistics on a dashboard, and free web service tooling able to do ever more sophisticated statistical analysis which you once had to pay for is becoming ever more common.
+
+Finally, specifically for Boost libraries we have an [http://www.boost.org/development/tests/master/developer/summary.html automated regression testing] system which works by various end users uploading XML results generated by Boost.Test to an FTP site where a cron script regularly runs to generate static HTML tables of passing and failing tests. Needless to say, if your library was as useful as possible to that system everybody wins, and your library is not as useful to that system if it uses assert() and even static_assert() because the XML uploaded is a compiler error console log or an assert failure diagnostic instead of a detailed list of which tests passed and which failed.
+
+Hopefully by now I have persuaded you to use an XML outputting unit test framework. If you are a Boost library, the obvious choice is to use Boost.Test. Despite its many problems, being slow to develop against and lack of maintenance in its release branch ('''NOTE:''' [https://raffienficiaud.github.io/test/boost_test/change_log.html Boost.Test v3 is now in testing, and should replace Boost.Test v2 soon]), Boost.Test is still a very competitive choice, and if you ignore the overly dense documentation and simply lift the pattern from this quick sample you'll be up and running very quickly:
+
+{{{#!C++
+#include "boost/test/unit_test.hpp"  // Note the lack of angle brackets
+
+BOOST_AUTO_TEST_SUITE(all)  // Can actually be any name you like
+
+BOOST_AUTO_TEST_CASE(works/spinlock, "Tests that the spinlock works as intended")  // Note the forward slashes in the test name
+{
+  boost::spinlock::spinlock<bool> lock;
+  BOOST_REQUIRE(lock.try_lock());
+  BOOST_REQUIRE(!lock.try_lock());
+  lock.unlock();
+  
+  std::lock_guard<decltype(lock)> h(lock);
+  BOOST_REQUIRE(!lock.try_lock());
+}
+// More BOOST_AUTO_TEST_CASE(), as many as is wanted
+
+BOOST_AUTO_TEST_SUITE_END()
+}}}
+
+Already those familiar with Boost.Test will notice some unusual choices, but I'll come back to why shortly. For reference there are additional common tests in addition to BOOST_REQUIRE:
+
+ BOOST_CHECK(expr):: Check if expr is true, continuing the test case anyway if false.
+ BOOST_CHECK_THROWS(expr):: Check if expr throws an exception, continuing the test case anyway if false.
+ BOOST_CHECK_THROW(expr, type):: Check if expr throws an exception of a specific type, continuing the test case anyway if false.
+ BOOST_CHECK_NO_THROW(expr):: Check if expr does not throw an exception, continuing the test case anyway if false.
+
+ BOOST_REQUIRE(expr):: Check if expr is true, immediately exiting the test case if false.
+ BOOST_REQUIRE_THROWS(expr):: Check if expr throws an exception, immediately exiting the test case if false.
+ BOOST_REQUIRE_THROW(expr, type):: Check if expr throws an exception of a specific type, immediately exiting the test case if false.
+ BOOST_REQUIRE_NO_THROW(expr):: Check if expr does not throw an exception, immediately exiting the test case if false.
+
+ BOOST_TEST_MESSAGE(msg):: Log a message with the XML output.
+ BOOST_CHECK_MESSAGE(pred, msg):: If pred is false, log a message with the XML output.
+ BOOST_WARN_MESSAGE(pred, msg):: If pred is false, log a warning message with the XML output.
+ BOOST_FAIL(msg):: Immediately exit this test case with a message.
+
+Boost.Test provides an enormous amount of extra stuff (especially in its v3 branch) for all sorts of advanced testing scenarios, but for most software being developed in a person's free time most of those advanced testing facilities don't provide sufficient benefit for the significant added cost of implementation. Hence, for personally developed open source the above primitive checks, or a combination thereof into more complex solutions, is likely sufficient for 99% of C++ code. There is also a very specific reason I chose this exact subset of Boost.Test's functionality to suggest using here, because [https://github.com/ned14/Boost.APIBind/blob/master/include/boost/test/unit_test.hpp Boost.APIBind]'s lightweight header only Boost.Test emulation defines just the above subset and usefully does so into a header inside APIBind called "boost/test/unit_test.hpp" which is identical to the Boost.Test header path, so if you include just that header you get compatibility with APIBind and Boost.Test. In other words, by using the pattern just suggested you can:
+
+1. With a macro switch turn on full fat Boost.Test.
+2. For the default use Boost.APIBind's thin wrap of [https://github.com/philsquared/Catch the CATCH header only unit testing library] which I have forked with added thread safety support. CATCH is very convenient to develop against, provides pretty coloured console unit test output and useful diagnostics, and on request on the command line can also output JUnit format XML ready for consumption by almost every unit test XML consuming tool out there. Boost.Test theoretically can be used header only, but you'll find it's very hard on your compile times, whereas CATCH is always header only and has a minimal effect on compile time. CATCH also comes as a single kitchen sink header file, and APIBind includes a copy for you.
+3. For those so motivated that they really want assert() and nothing more, simply wrap the above macros with calls to assert(). Your single unit test code base can now target up to three separate ways of reporting unit test fails.
+
+Note if CATCH doesn't have enough features and Boost.Test is too flaky, another popular choice with tons of bells and whistles is [https://code.google.com/p/googletest/ Google Test]. Like Boost.Test its Windows support is sadly also a bit flaky - in many ways for advanced testing scenarios the Microsoft Visual Studio test tooling is hard to beat on Windows, and now they are porting Visual Studio to all other platforms it may become the one to watch in the future - another good reason to get your C++ 11/14 codebase working perfectly on VS2015.
+
+What are the problems with replacing asserts with a unit test framework?
+
+1. Asserts are fast and don't synchronise threads. Unit test frameworks almost always must grab a mutex for every single check, even if that check passes, which can profoundly damage the effectiveness of your testing. The obvious workaround is to prepend an if statement of the test before every check, so {{{ if(!expr) BOOST_CHECK(expr); }}} but be aware now only failures will be output into XML, and many CI parsers will consider zero XML test results in a test case to be a fatal error (workaround: always do a BOOST_CHECK(true) at the very end of the test).
+
+2. Getting static_asserts to decay cleanly into a BOOST_CHECK without #ifdef-ing is not always obvious. The obvious beginning is:
+
+ {{{#!c++
+ #ifndef AM_USING_BOOST_TEST_FOR_STATIC_ASSERTS
+ #define BOOST_CHECK_MESSAGE(pred, msg) static_assert(pred, msg)
+ #endif
+ }}}
+ ... and now use BOOST_CHECK_MESSAGE instead of static_assert directly. If your static assert is inside library implementation code, consider a macro which the unit tests override when being built with a unit test framework, but otherwise defaults to static_assert.
+
+3. Asserts have no effect when NDEBUG is defined. Your test code may assume this for optimised builds, and a simple regex find and replace may not be sufficient.
+
+Libraries implementing XML outputting unit testing with the Boost.Test macro API:
+
+* https://github.com/boostorg/test
+* https://github.com/ned14/Boost.APIBind
+
+
+[[Image(http://www.nedprod.com/feed/MuutBadge.php?path=/cppbestpractice/consider-making-it-possible,link=https://muut.com/cppbestpractice/#!/consider-making-it-possible,alt=Comments)]]
+
+
+== 10. DESIGN/QUALITY: Consider breaking up your testing into per-commit CI testing, 24 hour soak testing, and parameter fuzz testing ==
+
+When a library is small, you can generally get away with running all tests per commit, and as that is easier that is usually what one does.
+
+However as a library grows and matures, you should really start thinking about categorising your tests into quick ones suitable for per-commit testing, long ones suitable for 24 hour soak testing, and parameter fuzz testing whereby a fuzz tool will try executing your functions with input deliberately designed to exercise unusual code path combinations. The order of these categories generally reflects the maturity of a library, so if a library's API is still undergoing heavy refactoring the second and third categories aren't so cost effective. I haven't mentioned the distinction between [http://stackoverflow.com/questions/4904096/whats-the-difference-between-unit-functional-acceptance-and-integration-test unit testing and functional testing and integration testing] here as I personally think that distinction not useful for libraries mostly developed in a person's free time (due to lack of resources, and the fact we all prefer to develop instead of test, one tends to fold unit and functional and integration testing into a single amorphous set of tests which don't strictly delineate as really we should, and instead of proper unit testing one tends to substitute automated parameter fuzz testing, which really isn't the same thing but it does end up covering similar enough ground to make do).
+
+There are two main techniques to categorising tests, and each has substantial pros and cons.
+
+The first technique is that you tag tests in your test suite with keyword tags, so "ci-quick", "ci-slow", "soak-test" and so on. The unit test framework then lets you select at execution time which set of tags you want. This sounds great, but there are two big drawbacks. The first is that each test framework has its own way of doing tags, and these are invariably not compatible so if you have a switchable Boost.Test/CATCH/Google Test generic test code setup then you'll have a problem with the tagging. One nasty but portable workaround I use is to include the tag into the test name and then using a regex test selector string on the command line, this is why I have categorised slashes in the test names exampled in the section above so I can select tests by category via their name. The second drawback is that you will find that tests often end up internally calling some generic implementation with different parameters, and you have to go spell out many sets of parameters in individual test cases when one's gut feeling is that those parameters really should be fuzz variables directly controlled by the test runner. Most test frameworks support passing variables into tests from the command line, but again this varies strongly across test frameworks in a way hard to write generic test code, so you end up hard coding various sets of variables one per test case.
+
+The second technique is a hack, but a very effective one. One simply parameterises tests with environment variables, and then code calling the unit test program can configure special behaviour by setting environment variables before each test iteration. This technique is especially valuable for converting per-commit tests into soak tests because you simply configure an environment variable which means ITERATIONS to something much larger, and now the same per-commit tests are magically transformed into soak tests. Another major use case is to reduce iterations for when you are running under valgrind, or even just a very slow ARM dev board. The big drawback here is the self deception that just iterating per commit tests a lot more does not a proper soak test suite make, and one can fool oneself into believing your code is highly stable and reliable when it is really only highly stable and reliable at running per commit tests, which obviously it will always be because you run those exact same patterns per commit so those are always the use patterns which will behave the best. Boost.AFIO is 24 hour soak tested on its per-commit tests, and yet I have been more than once surprised at segfaults caused by someone simply doing operations in a different order than the tests did them :(
+
+Regarding parameter fuzz testing, there are a number of tools available for C++, some better or more appropriate to your use case than others. The classic is of course http://ispras.linuxbase.org/index.php/API_Sanity_Autotest, though you'll need [http://ispras.linuxbase.org/index.php/ABI_Compliance_Checker their ABI Compliance Checker] working properly first which has become much easier for C++ 11 code since they recently added GCC 4.8 support (note that GCC 4.8 still has incomplete C++ 14 support). You should combine this with an executable built with, as a minimum, [http://clang.llvm.org/docs/UsersManual.html#controlling-code-generation the address and undefined behaviour sanitisers]. I haven't played with this tool yet with Boost.AFIO, though it is very high on my todo list as I have very little unit testing in AFIO (only functional and integration testing), and fuzz testing of my internal routines would be an excellent way of implementing comprehensive exception safety testing which I am also missing (and feel highly unmotivated to implement by hand).
+
+
+[[Image(http://www.nedprod.com/feed/MuutBadge.php?path=/cppbestpractice/consider-breaking-up-your-t,link=https://muut.com/cppbestpractice/#!/consider-breaking-up-your-t,alt=Comments)]]
+
+
+== 11. PORTABILITY: Consider not doing compiler feature detection yourself ==
+
+Something extremely noticeable about nearly all the reviewed C++ 11/14 libraries is that they manually do compiler feature detection in their config.hpp, usually via old fashioned compiler version checking. This tendency is not unsurprising as the number of potential C++ compilers your code usually needs to handle has essentially shrunk to three unlike the dozen common compilers implementing the 1998 C++ standard, and the chances are very high that three compilers will be upper bound going into the long term future. This makes compiler version checking a lot more tractable than say fifteen years ago.
+
+However, C++ 1z is expected to provide a number of feature detection macros via the work of SG-10, and GCC and clang already partially support these, especially in very recent compiler releases. To fill in the gaps in older editions of GCC and clang, and indeed MSVC at all, you might consider making use of the header file at https://github.com/ned14/Boost.APIBind/blob/master/include/cpp_feature.h which provides the following SG-10 feature detection macros on all versions of GCC, clang and MSVC:
+
+ __cpp_exceptions:: Whether C++ exceptions are available
+ __cpp_rtti:: Whether C++ RTTI is available
+
+ __cpp_alias_templates::
+ __cpp_alignas::
+ __cpp_decltype::
+ __cpp_default_function_template_args::
+ __cpp_defaulted_functions::
+ __cpp_delegated_constructors::
+ __cpp_deleted_functions::
+ __cpp_explicit_conversions::
+ __cpp_generalized_initializers::
+ __cpp_implicit_moves::
+ __cpp_inheriting_constructors::
+ __cpp_inline_namespaces::
+ __cpp_lambdas::
+ __cpp_local_type_template_args::
+ __cpp_noexcept::
+ __cpp_nonstatic_member_init::
+ __cpp_nullptr::
+ __cpp_override_control::
+ __cpp_reference_qualified_functions::
+ __cpp_range_for::
+ __cpp_raw_strings::
+ __cpp_rvalue_references::
+ __cpp_static_assert::
+ __cpp_thread_local::
+ __cpp_auto_type::
+ __cpp_strong_enums::
+ __cpp_trailing_return::
+ __cpp_unicode_literals::
+ __cpp_unrestricted_unions::
+ __cpp_user_defined_literals::
+ __cpp_variadic_templates::
+
+ __cpp_contextual_conversions::
+ __cpp_decltype_auto::
+ __cpp_aggregate_nsdmi::
+ __cpp_digit_separators::
+ __cpp_init_captures::
+ __cpp_generic_lambdas::
+ __cpp_relaxed_constexpr::
+ __cpp_return_type_deduction::
+ __cpp_runtime_arrays::
+ __cpp_variable_templates::
+
+The advantage of using these SG-10 macros in C++ 11/14 code is threefold:
+
+1. It should be future proof.
+2. It's a lot nicer than testing compiler versions.
+3. It expands better if a fourth C++ compiler suddenly turned up.
+
+Why use the https://github.com/ned14/Boost.APIBind/blob/master/include/cpp_feature.h header file instead of doing it by hand?
+
+1. Complete compiler support for GCC, clang and MSVC all versions.
+2. Updates in compiler support will get reflected into cpp_feature.h for you.
+3. You benefit from any extra compilers added automatically.
+4. If you're using Boost.APIBind you automatically get cpp_feature.h included for you as soon as you include any APIBind header file.
+
+Problems with cpp_feature.h:
+
+1. No support for detecting STL library feature availability. One can do this somewhat with GCC as it always pairs to a libstdc++ version, and of course one can do this for MSVC. However clang pairs to whatever is the latest STL on the system, plus GCC combined with libc++ is becoming increasingly common on Linux. In short you are on your own for STL library feature detection as I am unaware of any easy way to abstract this without the SG-10 library feature detection facilities built into the compiler.
+
+Incidentally Boost.APIBind wraps these SG-10 feature macros into Boost.Config compatible macros in https://github.com/ned14/Boost.APIBind/blob/master/include/boost/config.hpp which would be included, as with Boost, using "boost/config.hpp". You can therefore if you really want use the Boost feature detection macros instead, even without Boost being present.
+
+
+[[Image(http://www.nedprod.com/feed/MuutBadge.php?path=/cppbestpractice/consider-not-doing-compiler,link=https://muut.com/cppbestpractice/#!/consider-not-doing-compiler,alt=Comments)]]
+
+
+== 12. CONVENIENCE: Consider having Travis send your unit test code coverage results to Coveralls.io ==
+
+There is quite a neat web service called [https://coveralls.io coveralls.io] free for open source projects which graphically displays unit test line coverage in a pretty colour coded source code browser UI. You also get a badge which shows how much of your code is covered as a percentage. It might sound like a bit of a gimmick, but in terms of ease of quickly visualising what you ''haven't'' covered when you thought you should it's very handy. Also, if you hook coveralls into your github using travis, coveralls will comment on your pull requests and commits whether your test coverage has risen or fallen, and that can be more than useful when you send in a commit and an unexpected catastrophic fall in coverage occurs as that probably means you just committed buggy code.
+
+Anyway, firstly take a look at these libraries which use coveralls.io and decide if you like what you see:
+
+* https://coveralls.io/r/krzysztof-jusiak/di?branch=cpp14
+* https://coveralls.io/r/BoostGSoC13/boost.afio
+
+Assuming you are now convinced, firstly you obviously need travis working. You ''can'' use coveralls without travis, but it's a one click enable with travis and github, so we'll assume you've done that. Your next problem with be getting travis to calculate line coverage for you, and to send the results to coveralls.
+
+There are two approaches to this, and we'll start with the official one. Firstly you'll need a coveralls API key securely encoded into travis, [http://docs.travis-ci.com/user/environment-variables/#Secure-Variables see this page for how]. Next have a look at https://github.com/krzysztof-jusiak/di/blob/cpp14/.travis.yml, with the key line being:
+
+{{{
+after_success:
+  - if [ "${TRAVIS_BRANCH}" == "cpp14" ] && [ "${VARIANT}" == "coverage" ]; then (sudo pip install requests[security] cpp-coveralls && coveralls -r . -b test/ --gcov /usr/bin/${GCOV} --repo-token c3V44Hj0ZTKzz4kaa3gIlVjInFiyNRZ4f); fi
+}}}
+
+This makes use of the coveralls c++ tool at https://github.com/eddyxu/cpp-coveralls to do the analysis, and you'll also need to adjust your Jamfile as per https://github.com/krzysztof-jusiak/di/blob/cpp14/test/Jamfile.v2 with some variant addition like:
+
+{{{
+extend-feature variant : coverage ;
+compose <variant>coverage :
+    <cxxflags>"-fprofile-arcs -ftest-coverage" <linkflags>"-fprofile-arcs"
+    <optimization>off
+;
+}}}
+
+... which gets the gcov files to be output when the unit tests are executed.
+
+That's the official way, and you should try that first. However, I personally couldn't get the above working, though admittedly when I implemented coveralls support it was a good two years ago and I spent a large chunk of it fighting the tooling, so I eventually gave up and wrote my own coveralls coverage calculator which was partially borrowed from others. You can see mine at https://github.com/BoostGSoC13/boost.afio/blob/master/.travis.yml where you will note that I inject the fprofile-arcs etc arguments into b2 via its cxxflags from the outside. I then invoke a shell script at https://github.com/BoostGSoC13/boost.afio/blob/master/test/update_coveralls.sh:
+
+{{{
+#!/bin/bash
+# Adapted from https://github.com/purpleKarrot/Karrot/blob/develop/test/coveralls.in
+# which itself was adapted from https://github.com/berenm/cmake-extra/blob/master/coveralls-upload.in
+
+if [ 0 -eq $(find -iname "*.gcda" | wc -l) ]
+then
+  exit 0
+fi
+
+gcov-4.8 --source-prefix $1 --preserve-paths --relative-only $(find -iname "*.gcda") 1>/dev/null || exit 0
+
+cat >coverage.json <<EOF
+{
+  "service_name": "travis-ci",
+  "service_job_id": "${TRAVIS_JOB_ID}",
+  "run_at": "$(date --iso-8601=s)",
+  "source_files": [
+EOF
+
+for file in $(find * -iname '*.gcov' -print | egrep '.*' | egrep -v 'valgrind|SpookyV2|bindlib|test')
+do
+  FILEPATH=$(echo ${file} | sed -re 's%#%\/%g; s%.gcov$%%')
+  echo Reporting coverage for $FILEPATH ...
+  cat >>coverage.json <<EOF
+    {
+      "name": "$FILEPATH",
+      "source": $(cat $FILEPATH | python test/json_encode.py),
+      "coverage": [$(tail -n +3 ${file} | cut -d ':' -f 1 | sed -re 's%^ +%%g; s%-%null%g; s%^[#=]+$%0%;' | tr $'\n' ',' | sed -re 's%,$%%')]
+    },
+EOF
+done
+
+#cat coverage.json
+mv coverage.json coverage.json.tmp
+cat >coverage.json <(head -n -1 coverage.json.tmp) <(echo -e "    }\n  ]\n}")
+rm *.gcov coverage.json.tmp
+
+#head coverage.json
+#echo
+curl -F json_file=@coverage.json https://coveralls.io/api/v1/jobs
+#head coverage.json
+}}}
+
+This manually invokes gcov to convert the gcda files into a unified coverage dataset. I then use egrep to include all and egrep -v to exclude anything matching the pattern which is all the stuff not in the actual AFIO library. You'll note I build a JSON fragment as I go into the coverage.json temporary file, and the coverage is generated by chopping up the per line information into a very long string matching the coveralls JSON specification as per its API docs. Do note the separate bit of python called to convert the C++ source code into encoded JSON text (https://github.com/BoostGSoC13/boost.afio/blob/master/test/json_encode.py), I had some problems with UTF-8 in my source code, and forcing them through a ISO-8859 JSON string encode made coveralls happy. I then push the JSON to coveralls using curl. All in all a very blunt instrument, and essentially doing exactly the same thing as the official C++ coveralls tool now does, but you may find the manual method useful if the official tool proves too inflexible for your needs.
+
+
+[[Image(http://www.nedprod.com/feed/MuutBadge.php?path=/cppbestpractice/consider-having-travis-send,link=https://muut.com/cppbestpractice/#!/consider-having-travis-send,alt=Comments)]]
+
+
+== 13. CONVENIENCE: Consider creating a status dashboard for your library with everything you need to know shown in one place ==
+
+I like all-in-one-place software status dashboards where with a quick glance one can tell if there is a problem or not. I feel it makes it far more likely that I will spot a problem quickly if it is somewhere I regularly visit, and for that reason I like to mount my status dashboard at the front of my library docs and on my project's github Readme:
+
+* Front of my library docs: https://boostgsoc13.github.io/boost.afio/
+* Project's github Readme (bottom of page): https://github.com/BoostGSoC13/boost.afio
+
+Implementing these is ridiculously easy: it's a table in standard HTML which github markdown conveniently will render as-is for me, and you can see its source markdown/HTML at https://raw.githubusercontent.com/BoostGSoC13/boost.afio/master/Readme.md. The structure is very simple, columns for OS, Compiler, STL, CPU, Build status, Test status and with three badges in each status row, one each for header only builds, static library builds, and shared DLL builds.
+
+Keen eyes may note that the latter majority of that HTML looks automatically generated, and you would be right. The python script at https://github.com/BoostGSoC13/boost.afio/blob/master/scripts/GenJenkinsMatrixDashboard.py has a matrix of test targets configured on my Jenkins CI at https://ci.nedprod.com/ and it churns out HTML matching those. An alternative approach is https://github.com/BoostGSoC13/boost.afio/blob/master/scripts/JenkinsMatrixToDashboard.py which will parse a Jenkins CI test grid from a Matrix Build configuration into a collapsed space HTML table which fits nicely onto github. If you also want your HTML/markdown dashboard to appear in your BoostBook documentation, the script at https://github.com/BoostGSoC13/boost.afio/blob/master/scripts/readme_to_html.sh with the XSLT at https://github.com/BoostGSoC13/boost.afio/blob/master/scripts/xhtml_to_docbook.xsl should do a fine job.
+
+All of the above dashboarding is fairly Jenkins centric, so what if you just have Travis + Appveyor? I think Boost.DI has it right by encoding a small but complete status dashboard into its BoostBook docs and github, so examine:
+
+* Front page of library docs (underneath the table of contents): https://krzysztof-jusiak.github.io/di/cpp14/boost/libs/di/doc/html/
+* Project's github Readme (bottom of page, look for the badges): https://github.com/krzysztof-jusiak/di
+
+As a purely personal thing, I'd personally prefer the line of status badges ''before'' the table of contents such that I am much more likely to see it when jumping in and notice that something is red when it shouldn't be. But it's purely a personal thing, and each library author will have their own preference.
+
+Finally, I think that displaying status summaries via badges like this is another highly visible universal mark of software quality. It shows that the library author cares enough to publicly show the current state of their library. Future tooling by Boost which dashboards Boost libraries and/or ranks libraries by a quality score will almost certainly find the application specific ids for Travis, Appveyor, Coveralls etc by searching any Readme.md in the github repo for status badges, so by including status badges in your github Readme.md you can guarantee that such Boost library ranking scripts will work out of the box with no additional effort by you in the future.
+
+
+[[Image(http://www.nedprod.com/feed/MuutBadge.php?path=/cppbestpractice/consider-creating-a-status,link=https://muut.com/cppbestpractice/#!/consider-creating-a-status,alt=Comments)]]
+
+
+== 14. USER FRIENDLINESS: Consider letting potential users try your library with a single mouse click ==
+
+In the past year, many of the online C++ compiler websites have made available a REST API with which you can upload a ready to play sandbox of your C++ library with an example of usage. One which stands out is http://melpon.org/wandbox as it provides bleeding edge trunk C++ compilers as well as latest Boost, lets you upload multiple files which most of the other services do not, plus it lets you ask for a permalink to an uploaded sandbox which makes it particularly amenable for integration into your Continuous Integration setup (i.e. push a copy of the library + playpen per commit and incorporate the permalink into your generated docs).
+
+To that end the Boost community have been busy developing tooling to automate wandbox from Travis etc, and I have taken some of that tooling and bent it to my own ends. Firstly, take a look at https://github.com/BoostGSoC13/boost.afio/blob/master/send_to_wandbox.sh:
+
+{{{
+#!/bin/bash
+rm -rf send_to_wandbox_tmp
+mkdir send_to_wandbox_tmp
+include/boost/afio/bindlib/scripts/GenSingleHeader.py -DAFIO_STANDALONE=1 -DSPINLOCK_STANDALONE=1 -DBOOST_AFIO_DISABLE_VALGRIND=1 -Eafio_iocp.ipp -Ent_kernel_stuff -Evalgrind include/boost/afio/afio.hpp > include/boost/afio/single_include.hpp
+sed "1s/.*/#include \"afio_single_include.hpp\"/" example/readwrite_example.cpp > send_to_wandbox.cpp
+gcc -fpreprocessed -dD -E -P include/boost/afio/single_include.hpp > send_to_wandbox_tmp/afio_single_include2.hpp 2>/dev/null
+sed "/^$/d" send_to_wandbox_tmp/afio_single_include2.hpp > send_to_wandbox_tmp/afio_single_include.hpp
+rm -rf send_to_wandbox_tmp/afio_single_include2.hpp
+#include/boost/afio/bindlib/scripts/send_to_wandbox.py send_to_wandbox_tmp send_to_wandbox.cpp
+URL=`include/boost/afio/bindlib/scripts/send_to_wandbox.py send_to_wandbox_tmp send_to_wandbox.cpp | sed -e 's/.*\(http:\/\/[^ '"'"']*\).*/\1/'`
+if [[ $FRAME != "" ]]; then
+    echo '<iframe src="'$URL'" frameborder="0" style="height: 100%; width: 100%;" height="100%" width="100%"></iframe>'
+else
+    echo $URL
+fi
+}}}
+
+This shell script invokes the `GenSingleHeader.py` script in APIBind (https://github.com/ned14/Boost.APIBind/blob/master/scripts/GenSingleHeader.py) which will take a set of include files and follow any `#include`s to generate a single very large include file. It takes command arguments:
+
+ `-Iincludepath`:: Any paths to search for includes.
+ `-Dmacro`:: Any macros to hardcode at the beginning of the output. Note that macro logic is NOT followed by this script.
+ `-Aalwaysinclude`:: Always include an include file even if previously included. Substring matched.
+ `-Ealwaysexclude`:: Always exclude an include file no matter what. Substring matched.
+
+Unless you have very messy headers where logic controlled precise include order matters, this script is pretty good at generating a unified header file which works, though it may require a bit of fiddling with defines to get the output to work without a build system in place. After `GenSingleHeader.py` has worked, we ask GCC's preprocessor to eliminate any comments for us, then we use sed to eliminate any blank lines. Finally we invoke the `send_to_wandbox.py` script in APIBind (https://github.com/ned14/Boost.APIBind/blob/master/scripts/send_to_wandbox.py) to push the contents of the send_to_wandbox_tmp directory and the example file we want the user to play with, extract the permalink url sent back to use and echo that out for any CI scripts calling this script. In AFIO's case, that then appears as a giant "Try AFIO now in online web compiler" blue button at http://boostgsoc13.github.io/boost.afio/.
+
+Other examples of single mouse click C++ library tryout:
+
+* https://github.com/ldionne/hana/blob/develop (the "try it online" badge).
+* https://github.com/krzysztof-jusiak/di (the "try boost.di online" badge).
+
+Something I haven't seen yet, but would be taking a page from Rust, is that every documentation example code could be launched on demand in wandbox so people could play with the code.
+
+
+[[Image(http://www.nedprod.com/feed/MuutBadge.php?path=/cppbestpractice/consider-letting-potential,link=https://muut.com/cppbestpractice/#!/consider-letting-potential,alt=Comments)]]
+
+
+== 15. DESIGN: Consider making (more) use of ADL C++ namespace composure as a design pattern ==
+
+Most C++ programmers are aware of C++ template policy based design. This example is taken from https://en.wikipedia.org/wiki/Policy-based_design:
+
+{{{#!c++
+#include <iostream>
+#include <string>
+ 
+template <typename OutputPolicy, typename LanguagePolicy>
+class HelloWorld : private OutputPolicy, private LanguagePolicy
+{
+    using OutputPolicy::print;
+    using LanguagePolicy::message;
+ 
+public:
+    // Behaviour method
+    void run() const
+    {
+        // Two policy methods
+        print(message());
+    }
+};
+ 
+class OutputPolicyWriteToCout
+{
+protected:
+    template<typename MessageType>
+    void print(MessageType const &message) const
+    {
+        std::cout << message << std::endl;
+    }
+};
+ 
+class LanguagePolicyEnglish
+{
+protected:
+    std::string message() const
+    {
+        return "Hello, World!";
+    }
+};
+ 
+class LanguagePolicyGerman
+{
+protected:
+    std::string message() const
+    {
+        return "Hallo Welt!";
+    }
+};
+ 
+int main()
+{
+    /* Example 1 */
+    typedef HelloWorld<OutputPolicyWriteToCout, LanguagePolicyEnglish> HelloWorldEnglish;
+ 
+    HelloWorldEnglish hello_world;
+    hello_world.run(); // prints "Hello, World!"
+ 
+    /* Example 2 
+     * Does the same, but uses another language policy */
+    typedef HelloWorld<OutputPolicyWriteToCout, LanguagePolicyGerman> HelloWorldGerman;
+ 
+    HelloWorldGerman hello_world2;
+    hello_world2.run(); // prints "Hallo Welt!"
+}
+}}}
+
+This works very well when (a) your policy implementations fit nicely into template types and (b) the number of policy taking template types is reasonably low (otherwise you'll be doing a lot of typing as any changes to the policy design requires modifying every single instantiation of the policy taking template types). Another problem with policy based design is that it generates a lot of template instantiations, and generating a lot of template instantiations is bad because it is slow (type instantiation is typically linear to the number of types already instantiated and quadratic to the number of partial specialisations affecting a type, but some compilers are quadratic for both).
+
+Consider instead doing an ADL based namespace composure design pattern which is just a different way of doing policy based design. It can be highly effective in those niches where the traditional policy taking template approach falls down. Here is the same program above written using ADL namespace composure:
+
+{{{#!c++
+#include <iostream>
+#include <string>
+
+template<typename MessageType>
+void print(MessageType const &message)
+{
+  std::cout << message << std::endl;
+}
+namespace HelloWorld
+{
+  template<class T> void run(T v)
+  {
+    print(message(v));  // Cannot instantiate message() nor print() until T is known
+  }
+}
+namespace LanguagePolicyEnglish
+{
+  struct tag {};
+  template<class T> std::string message(T)
+  {
+    return "Hello, World!";
+  }
+}
+namespace LanguagePolicyGerman
+{
+  struct tag {};
+  template<class T> std::string message(T)
+  {
+    return "Hallo Welt!";
+  }
+}
+namespace LanguagePolicyDefault
+{
+  struct tag {};
+  using LanguagePolicyGerman::message;
+}
+int main()
+{
+  /* Example 1 */
+  {
+    using namespace LanguagePolicyEnglish;
+    using namespace HelloWorld;
+    run(tag()); // prints "Hello, World!"
+    // This works because HelloWorld::run()'s message() resolves inside these
+    // braces to LanguagePolicyEnglish::message() to the same namespace as
+    // struct tag thanks to argument dependent lookup
+  }
+
+  /* Example 2
+  * Does the same, but uses another language policy */
+  {
+    using namespace LanguagePolicyGerman;
+    using namespace HelloWorld;
+    run(tag()); // prints "Hallo Welt!"
+    // Whereas HelloWorld::run()'s message() now resolves inside these
+    // braces to LanguagePolicyGerman::message()
+  }
+
+  /* Example 3 */
+  {
+    using namespace LanguagePolicyDefault;
+    using namespace HelloWorld;
+    run(tag()); // prints "Hallo Welt!"
+    // Tries to find message() inside namespace LanguagePolicyDefault,
+    // which finds message aliased to LanguagePolicyGerman::message()
+  }
+}
+}}}
+
+The first example instantiates five types, so let's say it adds a cost of five. The second example instantiates merely the three empty tag types in each namespace, and otherwise only free functions which don't participate in global overload resolution unless ADL brings them into consideration. This ought to add much less load to the compiler than the traditional design. This second example may also require less refactoring in the face of changes than the traditional form.
+
+The above pattern is in fact entirely C++ 03 code and uses no C++ 11. However, template aliasing in C++ 11 makes the above pattern much more flexible. Have a look at https://github.com/ptal/expected/blob/master/include/boost/functional/monads/rebindable.hpp for examples of this ADL invoked namespace composure design pattern.
+
+
+[[Image(http://www.nedprod.com/feed/MuutBadge.php?path=/cppbestpractice/consider-making-use-of-adl,link=https://muut.com/cppbestpractice/#!/consider-making-use-of-adl,alt=Comments)]]
+
+
+== 16. BUILD: Consider defaulting to header only, but actively manage facilities for reducing build times ==
+
+Making your library header only is incredibly convenient for your users - they simply drop in a copy of your project and get to work, no build system worries. Hence most Boost libraries and many C++ libraries are header only capable, often header only default. A minority are even header only only.
+
+One thing noticed in the library review is just how many of the new C++ 11/14 libraries are header only only, and whilst convenient I think library authors should and moreover ''can'' do better. For some statistics to put this in perspective, proposed Boost.AFIO v1.3 provides a range of build configurations for its unit tests:
+
+1. Header only
+2. Precompiled header only (default)
+3. Precompiled not header only (library implementation put into a shared library)
+4. Precompiled header only with link time optimisation
+
+
+||= Build flags =||= Microsoft Windows 8.1 x64 with Visual Studio 2013 =||= Ubuntu 14.04 LTS Linux x64 with GCC 4.9 and gold linker =||= Ubuntu 14.04 LTS Linux x64 with clang 3.4 and gold linker =||
+|| Debug header only                   ||  7m17s || 12m0s  || 5m45s ||
+|| Debug precompiled header only       ||  2m10s || 10m26s || 5m46s ||
+|| Debug precompiled not header only   ||  0m55s ||  3m53s || asio failure ||
+|| Release precompiled header only     ||  2m58s ||  9m57s || 8m10s ||
+|| Release precompiled not header only ||  1m10s ||  3m22s || asio failure ||
+|| Release precompiled header only link time optimisation  || 7m30s || 13m0s   ||  8m11s ||
+
+These are for a single core 3.9Ghz i7-3770K computer. I think the results speak for themselves, and note that AFIO is only 8k lines with not much metaprogramming.
+
+The approaches for improving build times for your library users are generally as follows, and in order of effect:
+
+'''1. Offer a non-header only build configuration'''
+
+ Non-header build configurations can offer build time improvements of x4 or more, so these are always the best bang for your buck. Here is how many Boost libraries offer both header only and non-header only build configurations by using something like this in their config.hpp:
+
+ {{{#!c++
+// If we are compiling not header only
+#if (defined(BOOST_AFIO_DYN_LINK) || defined(BOOST_ALL_DYN_LINK)) && !defined(BOOST_AFIO_STATIC_LINK)
+
+# if defined(BOOST_AFIO_SOURCE)                // If we are compiling the library binary
+#  undef BOOST_AFIO_HEADERS_ONLY
+#  define BOOST_AFIO_DECL BOOST_SYMBOL_EXPORT    // Mark public symbols as exported from the library binary
+#  define BOOST_AFIO_BUILD_DLL                   // Tell code we are building a DLL or shared object
+# else
+#  define BOOST_AFIO_DECL BOOST_SYMBOL_IMPORT    // If not compiling the library binary, mark public symbols are imported from the library binary
+# endif
+#else                                          // If we are compiling header only
+# define BOOST_AFIO_DECL                         // Do no markup of public symbols
+#endif // building a shared library
+
+
+// Configure Boost auto link to get the compiler to auto link your library binary
+#if !defined(BOOST_AFIO_SOURCE) && !defined(BOOST_ALL_NO_LIB) && \
+    !defined(BOOST_AFIO_NO_LIB) && !AFIO_STANDALONE && !BOOST_AFIO_HEADERS_ONLY
+
+#define BOOST_LIB_NAME boost_afio
+
+// tell the auto-link code to select a dll when required:
+#if defined(BOOST_ALL_DYN_LINK) || defined(BOOST_AFIO_DYN_LINK)
+#define BOOST_DYN_LINK
+#endif
+
+#include <boost/config/auto_link.hpp>
+
+#endif  // auto-linking disabled
+
+
+#if BOOST_AFIO_HEADERS_ONLY == 1                              // If AFIO is headers only
+# define BOOST_AFIO_HEADERS_ONLY_FUNC_SPEC inline               // Mark all functions as inline
+# define BOOST_AFIO_HEADERS_ONLY_MEMFUNC_SPEC inline            // Mark all member functions as inline
+# define BOOST_AFIO_HEADERS_ONLY_VIRTUAL_SPEC inline virtual    // Mark all virtual member functions as inline virtual
+// GCC gets upset if inline virtual functions aren't defined
+# ifdef BOOST_GCC
+#  define BOOST_AFIO_HEADERS_ONLY_VIRTUAL_UNDEFINED_SPEC { BOOST_AFIO_THROW_FATAL(std::runtime_error("Attempt to call pure virtual member function")); abort(); }
+# else
+#  define BOOST_AFIO_HEADERS_ONLY_VIRTUAL_UNDEFINED_SPEC =0;
+# endif
+#else                                                         // If AFIO is not headers only
+# define BOOST_AFIO_HEADERS_ONLY_FUNC_SPEC extern BOOST_AFIO_DECL  // Mark all functions as extern dllimport/dllexport
+# define BOOST_AFIO_HEADERS_ONLY_MEMFUNC_SPEC                      // Mark all member functions with nothing
+# define BOOST_AFIO_HEADERS_ONLY_VIRTUAL_SPEC virtual              // Mark all virtual member functions as virtual (no inline)
+# define BOOST_AFIO_HEADERS_ONLY_VIRTUAL_UNDEFINED_SPEC =0;        // Mark all pure virtual member functions with nothing special
+#endif
+ }}}
+
+ This looks a bit complicated, but isn't really. Generally you will mark up those classes and structs you implement in a .ipp file (this being the file implementing the APIs declared in the header which is included by the header if building header only, else is included by a .cpp file if not building header only) with `BOOST_AFIO_DECL`, functions with `BOOST_AFIO_HEADERS_ONLY_FUNC_SPEC`, all out-of-class member functions (i.e. those not implemented inside the class or struct declaration) with `BOOST_AFIO_HEADERS_ONLY_MEMFUNC_SPEC`, all virtual member functions with `BOOST_AFIO_HEADERS_ONLY_VIRTUAL_SPEC` and append to all unimplemented virtual member functions `BOOST_AFIO_HEADERS_ONLY_VIRTUAL_UNDEFINED_SPEC`. This inserts the correct markup to generate both optimal header only and optimal non header only outcomes.
+
+'''2. Precompiled headers'''
+
+ You probably noticed that in the table above that precompiled headers gain nothing on clang, +13% on GCC and +70% on MSVC. Those percentages vary according to source code, but I have found them fairly similar across my own projects - on MSVC, precompiled headers are a must have on an already much faster compiler than any of the others.
+
+ Turning on precompiled headers in Boost.Build is easy:
+ {{{
+cpp-pch afio_pch : afio_pch.hpp : <include>. ;
+ }}}
+ And now simply link your program to afio_pch to enable. If you're on cmake, you definitely should check out https://github.com/sakra/cotire.
+
+'''3. `extern template` your templates with their most common template parameters in the headers, and force instantiate those same common instances into a separate static library'''
+
+ The following demonstrates the technique:
+ {{{#!c++
+// Header.hpp
+template<class T> struct Foo
+{
+  T v;
+  inline Foo(T _v);
+};
+// Definition must be made outside struct Foo for extern template to have effect
+template<class T> inline Foo<T>::Foo(T _v) : v(_v) { }
+
+// Inhibit automatic instantiation of struct Foo for common types
+extern template struct Foo<int>;
+extern template struct Foo<double>;
+
+
+// Source.cpp
+#include "Header.hpp"
+#include <stdio.h>
+
+// Force instantiation of struct Foo with common types. Usually compiled into
+// a separate static library as bundling it into the main shared library can
+// introduce symbol visibility problems, so it's easier and safer to use a static
+// library
+template struct Foo<int>;
+template struct Foo<double>;
+
+int main(void)
+{
+  Foo<long> a(5);   // Works!
+  Foo<int> b(5);    // Symbol not found if not force instantiated above
+  Foo<double> c(5); // Symbol not found if not force instantiated above
+  printf("a=%l, b=%d, c=%lf\n", a.v, b.v, c.v);
+  return 0;
+}
+ }}}
+ The idea behind this is to tell the compiler to not instantiate common instantiations of your template types on demand for every single compiland as you will explicitly instantiate them exactly once elsewhere. This can give quite a bump to build times for template heavy libraries.
+
+'''4. Use C++ Modules'''
+
+ If you are on a very recent clang, or on a MSVC made sometime after 2016, there will probably be some implementation of C++ Modules available. C++ Modules as presently proposed for C++ 1z is poorly named in that after multiple rounds of simplification it provides little modularity at all, and is now really the beginnings of an AST database assisted build system which can dramatically improve build times in a similar way to precompiled headers. I therefore really wish that "C++ Modules" were called "C++ Build Acceleration" instead, but unfortunately no one proposing this feature to WG21 seems to agree. Anyway, for clang follow the instructions at http://clang.llvm.org/docs/Modules.html whereby you write up a module map file which delineates your header files into AST database objects, and your compiler will precompile your headers into an AST database. Unfortunately it presently seems you must manually annotate what parts are exposed and what parts are hidden in the module map rather than being able to reuse any dllimport/dllexport infrastructure already present. Your code when it includes a header will now have the compiler automatically go fetch the precompiled version from the database and use all exported types.
+
+ Microsoft unfortunately presently do not intend to implement Modules in the same way as clang, and requires you to do a lot more work including source code modification. Follow the instructions at http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4465.pdf instead.
+
+ If you think of "C++ Modules" as really a somewhat more flexible and reusable implementation of existing precompiled headers which lets the compiler figure out what precompiled parts to use without you manually telling it as you must right now, you can estimate whether it is worth the effort to add support for Modules to your library as the speedup is likely similar to a precompiled header. The clang method is non-intrusive to your source code and doesn't get in the way of older compilers, but adds significant hassle in keeping the module map and the source code in sync. The Microsoft method seems to require a fair bit of #ifdef, but the module specification must be part of the source code which may aid keeping it in sync. 
+
+
+[[Image(http://www.nedprod.com/feed/MuutBadge.php?path=/cppbestpractice/consider-defaulting-to-head,link=https://muut.com/cppbestpractice/#!/consider-defaulting-to-head,alt=Comments)]]
+
+
+== 17. COUPLING: Consider allowing your library users to dependency inject your dependencies on other libraries ==
+
+As mentioned earlier, the libraries reviewed overwhelmingly chose to use STL11 over any equivalent Boost libraries, so hardcoded `std::thread` instead of `boost::thread`, hardcoded `std::shared_ptr` over `boost::shared_ptr` and so on. This makes sense right now as STL11 and Boost are still fairly close in functionality, however in the medium term there will be significant divergence between Boost and the STL as Boost "gets ahead" of the STL in terms of features. Indeed, one may find oneself needing to "swap in" Boost to test one's code with some future STL pattern shortly to become standardised.
+
+Let me put this another way: imagine a near future where Boost.Thread has been rewritten atop of the STL11 enhancing the STL11 threading facilities very substantially with lots of cool features which may not enter the standard until the 2020s. If your library is hardcoded to only use the STL, you may lose out on substantial performance or feature improvements. Your users may clamour to be able to use Boost.Thread with your library. You will then have to add an additional code path for Boost.Thread which replicates the STL11 threading path, probably selectable using a macro and the alternative code paths swapped out with `#ifdef`. But you still may not be done - what if Boost.Chrono also adds significant new features? Or Boost.Regex? Or any of the Boost libraries now standardised into the STL? Before you know it [https://github.com/chriskohlhoff/asio/blob/master/asio/include/asio/detail/config.hpp your config.hpp may look like the one from ASIO] which has already gone all the way in letting users choose their particular ASIO configuration, and let me quote a mere small section of it to give an idea of what is involved:
+
+{{{#!c++
+...
+// Standard library support for chrono. Some standard libraries (such as the
+// libstdc++ shipped with gcc 4.6) provide monotonic_clock as per early C++0x
+// drafts, rather than the eventually standardised name of steady_clock.
+#if !defined(ASIO_HAS_STD_CHRONO)
+# if !defined(ASIO_DISABLE_STD_CHRONO)
+#  if defined(__clang__)
+#   if defined(ASIO_HAS_CLANG_LIBCXX)
+#    define ASIO_HAS_STD_CHRONO 1
+#   elif (__cplusplus >= 201103)
+#    if __has_include(<chrono>)
+#     define ASIO_HAS_STD_CHRONO 1
+#    endif // __has_include(<chrono>)
+#   endif // (__cplusplus >= 201103)
+#  endif // defined(__clang__)
+#  if defined(__GNUC__)
+#   if ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 6)) || (__GNUC__ > 4)
+#    if defined(__GXX_EXPERIMENTAL_CXX0X__)
+#     define ASIO_HAS_STD_CHRONO 1
+#     if ((__GNUC__ == 4) && (__GNUC_MINOR__ == 6))
+#      define ASIO_HAS_STD_CHRONO_MONOTONIC_CLOCK 1
+#     endif // ((__GNUC__ == 4) && (__GNUC_MINOR__ == 6))
+#    endif // defined(__GXX_EXPERIMENTAL_CXX0X__)
+#   endif // ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 6)) || (__GNUC__ > 4)
+#  endif // defined(__GNUC__)
+#  if defined(ASIO_MSVC)
+#   if (_MSC_VER >= 1700)
+#    define ASIO_HAS_STD_CHRONO 1
+#   endif // (_MSC_VER >= 1700)
+#  endif // defined(ASIO_MSVC)
+# endif // !defined(ASIO_DISABLE_STD_CHRONO)
+#endif // !defined(ASIO_HAS_STD_CHRONO)
+
+// Boost support for chrono.
+#if !defined(ASIO_HAS_BOOST_CHRONO)
+# if !defined(ASIO_DISABLE_BOOST_CHRONO)
+#  if (BOOST_VERSION >= 104700)
+#   define ASIO_HAS_BOOST_CHRONO 1
+#  endif // (BOOST_VERSION >= 104700)
+# endif // !defined(ASIO_DISABLE_BOOST_CHRONO)
+#endif // !defined(ASIO_HAS_BOOST_CHRONO)
+...
+}}}
+
+ASIO currently has over 1000 lines of macro logic in its config.hpp with at least twelve different possible combinations, so that is 2 !^ 12 = 4096 different configurations of code paths (note some combinations may not be allowed in the source code, I didn't check). Are all of these tested equally? I actually don't know, but it seems a huge task requiring many days of testing if they are. However there is a far worse problem here: '''what happens if library A configures ASIO one way and library B configures ASIO a different way, ''and then a user combines both libraries A and B into the same process?'''''
+
+The answer is that such a combination violates ODR, and therefore is undefined behaviour i.e. it will crash. This makes the ability to so finely configure ASIO much less useful than it could be.
+
+Let me therefore propose something better: allow library users to ''dependency inject'' from the outside the configuration of whether to use a STL11 dependency or its Boost equivalent. If one makes sure to encapsulate the dependency injection into a unique inline namespace, that prevents violation of ODR and therefore collision of the incompatibly configured library dependencies. If the dependent library takes care to coexist with alternative configurations and versions of itself inside the same process, this:
+
+* Forces you to formalise your dependencies (this has a major beneficial effect on design, trust me that your code enormously improves when you are forced to think correctly about this).
+* Offers maximum convenience and utility to your library's users.
+* Lets you better test your code against multiple (future) STL implementations.
+* Looser coupling.
+* Much easier upgrades later on (i.e. less maintenance).
+
+What it won't do:
+
+* Prevent API and version fragmentation.
+* Deal with balkanisation (i.e. two configurations of your library are islands, and cannot interoperate).
+
+In short whether the pros outweigh the cons comes down to your library's use cases, you as a maintainer, and so on. Indeed you might make use of this technique internally for your own needs, but not expose the facility to choose to your library users.
+
+So how does one implement STL dependency injection in C++ 11/14? One entirely valid approach is the ASIO one of a large config.hpp file full of macro logic which switches between Boost and the STL11 for the following header files which were added in C++ 11:
+
+||= Boost header    =|| `array.hpp` || `atomic.hpp`            || `chrono.hpp`    || `thread.hpp`         || `bind.hpp`   || `thread.hpp` || `thread.hpp` || `random.hpp`    || `ratio.hpp` || `regex.hpp` || `system/system_error.hpp` || `thread.hpp` || `tuple/tuple.hpp` || `type_traits.hpp` || no equivalent ||
+||= Boost namespace =|| `boost`     || `boost, boost::atomics` || `boost::chrono` || `boost`              || `boost`      || `boost`      || `boost`      || `boost::random` || `boost`     || `boost`     || `boost::system`           || `boost`      || `boost`           || `boost`           ||               ||
+||= STL11 header    =|| `array`     || `atomic`                || `chrono`        || `condition_variable` || `functional` || `future`     || `mutex`      || `random`        || `ratio`     || `regex`     || `system_error`            || `thread`     || `tuple`           || `type_traits`     || `typeindex`   ||
+||= STL11 namespace =|| `std`       || `std`                   || `std::chrono`   || `std`                || `std`        || `std`        || `std`        || `std`           || `std`       || `std`       || `std`                     || `std`        || `std`             || `std`             || `std`         ||
+
+At the time of writing, a very large proportion of STL11 APIs are perfectly substitutable with Boost i.e. they have identical template arguments, parameters and type signatures, so all you need to do is to alias either namespace `std` or namespace `boost::?` into your own library namespace as follows:
+
+{{{#!c++
+// In config.hpp
+namespace mylib
+{
+  inline namespace MACRO_UNIQUE_ABI_ID {
+#ifdef MYLIB_USING_BOOST_RATIO  // The external library user sets this
+    namespace ratio = ::boost;
+#else
+    namespace ratio = ::std;
+#endif
+  }
+}
+
+// To use inside namespace mylib::MACRO_UNIQUE_ABI_ID, do:
+ratio::ratio<2, 1> ...
+}}}
+
+As much as the above looks straightforward, you will find it quickly multiplies into a lot of work just as with ASIO's config.hpp. You will also probably need to do a lot of code refactoring such that every use of ratio is prefixed with a ratio namespace alias, every use of regex is prefixed with a regex namespace alias and so on. So is there an easier way?
+
+Luckily there is, and it is called [https://github.com/ned14/Boost.APIBind APIBind]. APIBind takes away a lot of the grunt work in the above, specifically:
+
+* APIBind provides ''bind files'' for the above C++ 11 header files which let you bind just the relevant ''part of'' namespace boost or namespace std into your namespace mylib. In other words, in your namespace mylib you simply go ahead and use ratio<N, D> with no namespace prefix because ratio<N, D> has been bound directly into your mylib namespace for you. [https://github.com/ned14/Boost.APIBind/tree/master/bind APIBind's bind files] essentially work as follows:
+
+ {{{#!c++
+// In header <ratio> the API being bound
+namespace std { template <intmax_t N, intmax_t D = 1> class ratio; }
+
+// Ask APIBind to bind ratio into namespace mylib
+#define BOOST_STL11_RATIO_MAP_NAMESPACE_BEGIN namespace mylib {
+#define BOOST_STL11_RATIO_MAP_NAMESPACE_END }
+#include BOOST_APIBIND_INCLUDE_STL11(bindlib, std, ratio)  // If you replace std with boost, you bind boost::ratio<N, D> instead.
+
+// Effect on namespace mylib
+namespace mylib
+{
+  template<intmax_t _0, intmax_t _1 = 1> using ratio = ::std::ratio<_0, _1>;
+}
+
+// You can now use mylib::ratio<N, D> without prefixing. This is usually a very easy find and replace in files operation.
+ }}}
+
+* APIBind provides generation of inline namespaces with an ABI and version specific mangling to ensure different dependency injection configurations do not collide:
+
+ {{{#!c++
+// BOOST_AFIO_V1_STL11_IMPL, BOOST_AFIO_V1_FILESYSTEM_IMPL and BOOST_AFIO_V1_ASIO_IMPL all are set to either boost or std in your config.hpp
+
+// Note the last bracketed item is marked inline. On compilers without inline namespace support this bracketed item is ignored.
+#define BOOST_AFIO_V1 (boost), (afio), (BOOST_BINDLIB_NAMESPACE_VERSION(v1, BOOST_AFIO_V1_STL11_IMPL, BOOST_AFIO_V1_FILESYSTEM_IMPL, BOOST_AFIO_V1_ASIO_IMPL), inline)
+#define BOOST_AFIO_V1_NAMESPACE       BOOST_BINDLIB_NAMESPACE      (BOOST_AFIO_V1)
+#define BOOST_AFIO_V1_NAMESPACE_BEGIN BOOST_BINDLIB_NAMESPACE_BEGIN(BOOST_AFIO_V1)
+#define BOOST_AFIO_V1_NAMESPACE_END   BOOST_BINDLIB_NAMESPACE_END  (BOOST_AFIO_V1)
+
+// From now on, instead of manually writing namespace boost { namespace afio { and boost::afio, instead do:
+BOOST_AFIO_V1_NAMESPACE_BEGIN
+  struct foo;
+BOOST_AFIO_V1_NAMESPACE_END
+
+// Reference struct foo from the global namespace
+BOOST_AFIO_V1_NAMESPACE::foo;
+
+// Alias hard version dependency into mylib
+namespace mylib
+{
+  namespace afio = BOOST_AFIO_V1_NAMESPACE;
+}
+ }}}
+
+* APIBind also provides boilerplate for allowing inline reconfiguration of a library during the same translation unit such that the following "just works":
+
+ {{{#!c++
+// test_all_multiabi.cpp in the AFIO unit tests
+
+// A copy of AFIO + unit tests completely standalone apart from Boost.Filesystem
+#define BOOST_AFIO_USE_BOOST_THREAD 0
+#define BOOST_AFIO_USE_BOOST_FILESYSTEM 1
+#define ASIO_STANDALONE 1
+#include "test_all.cpp"
+#undef BOOST_AFIO_USE_BOOST_THREAD
+#undef BOOST_AFIO_USE_BOOST_FILESYSTEM
+#undef ASIO_STANDALONE
+
+// A copy of AFIO + unit tests using Boost.Thread, Boost.Filesystem and Boost.ASIO
+#define BOOST_AFIO_USE_BOOST_THREAD 1
+#define BOOST_AFIO_USE_BOOST_FILESYSTEM 1
+// ASIO_STANDALONE undefined
+#include "test_all.cpp"
+#undef BOOST_AFIO_USE_BOOST_THREAD
+#undef BOOST_AFIO_USE_BOOST_FILESYSTEM
+ }}}
+
+ In other words, you can reset the configuration macros and reinclude afio.hpp to generate a new configuration of AFIO as many times as you like within the same translation unit. This allows header only library A to require a different configuration of AFIO than header only library B, and it all "just works". As APIBind is currently lacking documentation, I'd suggest you [https://docs.google.com/presentation/d/1badtN7A4lMzDl5i098SHKvlWsQY-tsVcutpq_UlRmFI/pub?start=false&loop=false&delayms=3000 review the C++ Now 2015 slides on the topic] until proper documentation turns up. The procedure is not hard, and you can examine https://github.com/BoostGSoC13/boost.afio/blob/master/include/boost/afio/config.hpp for a working example of it in action. Do watch out for the comments marking the stanzas which are automatically generated by scripting tools in APIBind, writing those by hand would be tedious.
+
+
+[[Image(http://www.nedprod.com/feed/MuutBadge.php?path=/cppbestpractice/consider-allowing-your-libr,link=https://muut.com/cppbestpractice/#!/consider-allowing-your-libr,alt=Comments)]]
+
+
+== 18. FUTURE PROOFING: Consider being C++ resumable function ready ==
+
+This is going to be one of the hardest topics to write about given the highly uncertain present plans for resumable function/coroutine support in C++ 1z. I base most of the following section on N4402 https://isocpp.org/files/papers/N4402.pdf and conversations with Gor Nishanov at C++ Now 2015, plus on conversations with Oliver Kowalke regarding proposed Boost.Fiber. Gor also kindly supplied me with a pre-draft N4499.
+
+Firstly, should you care about being C++ resumable function ready? If your library ever:
+
+* Uses threads.
+* Does i/o.
+* Uses callbacks, including `std::function`.
+
+Then the answer is yes! The current C++ 1z resumable function proposal provides two verbs to work with resumable functions:
+
+1. `await`: ''potentially'' suspend the execution of the current function and return a future result now, resuming this function's execution when the callable passed to `await` finishes execution somewhere else or at some other time. Note that the name of this keyword may change in the future. Use of the `await` keyword always causes the invoking function to return some synchronisation object (often a `future<T>`) with a known `coroutine_traits` specialisation, where the default catch all specialisation for any `R(T...)` callable is `std::future<R>`.
+
+ This probably is a bit head wrecky, so let's look at some code:
+
+ {{{#!c++
+// This is some function which schedules some async operation whose result is returned via the future<int>
+extern std::future<int> async_call();
+
+// This is a function which calls async_call ten times, suspending itself while async_call runs.
+std::future<int> accumulate()
+{
+  int total=0;
+  for(size_t n=0; n<10; n++)
+    total+=await async_call();  // Note the await keyword, this is where the function might suspend
+  return total;
+}
+
+int main(void)
+{
+  std::cout << "Total is " << accumulate().get() << std::endl;
+  return 0;
+}
+ }}}
+
+ The `await` keyword is rather like C++ 11 range for loops in that it expands into a well specified boilerplate. Let's look at the above code but with some of the boilerplate inserted, remembering that C++ 1z futures now have continuations support via the `.then(callable)` member function, and bearing in mind this is a simplified not actual expansion of the boilerplate for the purposes of brevity (you can find the actual boilerplate expansion in the N-papers submitted to WG21 if you really want):
+
+ {{{#!c++
+// Thanks to Gor Nishanov for checking this code for me!
+
+// This is some function which schedules some async operation whose result is returned via the future<int>
+extern std::future<int> async_call();
+
+// This is a function which calls async_call ten times, suspending itself while async_call runs.
+std::future<int> accumulate()
+{
+  // coroutine_traits<R, Ts...> is specialised with the call signature of this function i.e. std::future<int>()
+  // promise_type defaults to a wrap of type R::promise_type, so in this case a wrap of std::promise<int>
+
+  // Always dynamically allocate a context on entry to a resumable function (the frame allocator defaults to std::allocator<char>)
+  auto &__frame_allocator=std::coroutine_traits<std::future<int>>::get_allocator();
+  struct __context_type
+  {
+    std::coroutine_traits<std::future<int>>::promise_type __resume_promise;
+    ... <args, stack, state> ...
+  } *__context=__frame_allocator.allocate(sizeof(__context_type));
+
+  // Construct the context frame
+  new (__context) __context_type(<args, stack, state>);
+
+  // Generate a future for the completion of this function
+  auto __return_object(__context->__resume_promise.get_return_object());
+  
+  if(__context->__resume_promise.initial_suspend())
+    return suspend_now();                          // Not expanded for brevity
+
+  try
+  {
+    int total=0;
+    for(size_t n=0; n<10; n++)
+    {
+      std::future<int> &&__temp=async_call();        // Bind to rvalue ref, no moving
+      if(!__temp.await_ready())                      // defaults to __temp.is_ready()
+      {
+        // Internally generated by the compiler to resume me at the resume_me_detached goto label
+        // after storing my state into __context
+        unspecified_callable &&__resume_me(__frame_allocator, __resume_promise, resume_me_detached);
+
+        // Have __temp, when signalled, resume my execution. defaults to __temp.then(__resume_me).
+        // __resume_me will be executed immediately after __temp.set_value() by the thread calling set_value().
+        __temp.await_suspend(__resume_me);
+
+        return __return_object;                      // exits function with future, will resume and signal later
+      }
+never_resumed:                                       // This path only taken if function never resumed
+      total+=__temp.await_resume();                  // defaults to __temp.get(), this is always ready and does not block
+    }
+    __context->__resume_promise.set_value(total);
+  }
+  catch(...)
+  {
+    __context->__resume_promise.set_exception(std::current_exception());
+  }
+  if(__context->__resume_promise.final_suspend())
+    return suspend_now();                            // Not expanded for brevity, jumps to resume_me_addr path
+  __context->~__context_type();
+  __frame_allocator.deallocate(__context, sizeof(__context_type));
+  return __return_object;
+  
+
+
+    // *** ALTERNATIVE DETACHED CODE PATH FOR WHEN THE FUNCTION IS RESUMED ***
+    for(size_t n=0; n<10; n++)
+    {
+      std::future<int> &&__temp=async_call();        // Bind to rvalue ref, no moving
+      if(!__temp.await_ready())                      // defaults to __temp.is_ready()
+      {
+        // Have __temp, when signalled, resume my execution. defaults to __temp.then(__resume_me).
+        // __resume_me will be executed immediately after __temp.set_value() by the thread calling set_value().
+        __temp.await_suspend(__resume_me);
+
+        // Suspend myself using previously allocated __resume_me
+        __resume_me.suspend();
+      }
+resume_me_detached:                                  // This path taken if function ever resumed
+      total+=__temp.await_resume();                  // defaults to __temp.get(), this is always ready and does not block
+    }
+    __context->__resume_promise.set_value(total);
+  }
+  catch(...)
+  {
+    __context->__resume_promise.set_exception(std::current_exception());
+  }
+  if(__context->__resume_promise.final_suspend())
+    return suspend_now();                            // Not expanded for brevity, jumps to resume_me_addr path
+  __context->~__context_type();
+  __frame_allocator.deallocate(__context, sizeof(__context_type));
+  // No meaningful return from this function can occur
+}
+
+int main(void)
+{
+  std::cout << "Total is " << accumulate().get() << std::endl;
+  return 0;
+}
+ }}}
+
+ This boilerplate expanded version may still hurt the head, so here is essentially what happens:
+   1. We dynamically allocate a stack frame on entry, and that dynamic memory allocation sticks around until the resumable function completes.
+   2. We always construct a promise-future pair for the result (or whatever synchronisation object `coroutine_traits` says) on entry to the function.
+   3. If `async_call()` always returns a signalled future, we add the result to total, signal the future and return the future.
+   4. If `async_call()` ever returns an unsignaled future, we ask the unsignaled future to resume our detached path when it is signalled. We suspend ourselves, and return our future immediately. At some point our detached path will signal the future.
+
+ The `await_ready(), await_suspend()` and `await_resume()` functions are firstly looked up as member functions of the synchronisation type returned by the traits specialisation. If not present, they are then looked up as free functions within the same namespace as the synchronisation type with usual overload resolution.
+
+2. `yield`: repeatedly suspends the execution of the current function with the value specified to yield, resuming higher up the call tree with that value output. Note that the name of this keyword may change in the future. Yield is implemented as yet more boilerplate sugar for a repeated construction of a promise-future pair then repeatedly signalled with some output value until the generating function (i.e. the function calling `yield`) returns, with the sequence of those repeated constructions and signals wrapped into an iterable such that the following just works:
+
+ {{{#!c++
+generator<int> fib(int n)
+{
+  int a = 0;
+  int b = 1;
+  while (n-- > 0)
+  {
+    yield a;
+    auto next = a + b;
+    a = b;
+    b = next;
+  }
+}
+
+int main()
+{
+  for (auto v : fib(35))
+    std::cout << v << std::endl;
+}
+ }}}
+
+ This just works because `generator<int>` provides an iterator at `generator<int>::iterator` and a promise type at `generator<int>::promise_type`. The iterator, when dereferenced, causes a single iteration of `fib()` between the `yield` statements and the value yielded is output by the iterator. Note that for each iteration, a new promise and future pair is created, then destroyed and created, and so on until the generator returns.
+
+All this is great if you are on Microsoft's compiler which has an experimental implementation of these proposed resumable functions, but what about the rest of us before C++ 1z? Luckily [http://olk.github.io/libs/fiber/doc/html/ Boost has a conditionally accepted library called Boost.Fiber] which was one of the C++ 11/14 libraries reviewed above and this, with a few caveats, provides good feature parity with proposed C++1z coroutines at the cost of having to type out the boilerplate by hand. Boost.Fiber provides a mirror image of the STL threading library, so:
+
+|| `std::thread`             || => || `fibers::fiber`              ||
+|| `std::this_thread`        || => || `fibers::this_fiber`         ||
+|| `std::mutex`              || => || `fibers::mutex`              ||
+|| `std::condition_variable` || => || `fibers::condition_variable` ||
+|| `std::future<T>`          || => || `fibers::future<T>`          ||
+
+Rewriting the above example to use Boost.Fiber and Boost.Thread instead, remembering that Boost.Thread's futures already provide C++ 1z continuations via `.then(callable)`:
+
+{{{#!c++
+// Thanks to Oliver Kowalke for checking this code for me!
+
+// This is some function which schedules some async operation whose result is returned via the future<int>
+extern boost::future<int> async_call();
+
+// This is a function which calls async_call ten times, suspending itself while async_call runs.
+boost::fibers::future<int> accumulate()
+{
+  boost::fibers::packaged_task<int()> t([]{
+    int total=0;
+    for(size_t n=0; n<10; n++)
+    {
+      boost::fibers::promise<int> p;
+      boost::fibers::future<int> f(p.get_future());
+      async_call().then([p=std::move(p)](boost::future<int> f){
+        if(f.has_error())
+          p.set_exception(f.get_exception_ptr());
+        else
+          p.set_value(f.get());
+      });
+      total+=f.get();
+    }
+    return total;
+  });
+  boost::fibers::future<int> f(t.get_future());
+  boost::fibers::fiber(std::move(t)).detach();
+  return f;
+}
+
+int main(void)
+{
+  std::cout << "Total is " << accumulate().get() << std::endl;
+  return 0;
+}
+}}}
+
+As you can see, there is an unfortunate amount of extra boilerplate to convert between Boost.Thread futures and Boost.Fiber futures, plus more boilerplate to make `accumulate()` into a resumable function -- essentially one must boilerplate out `accumulate()` as if it were a kernel thread complete with nested lambdas. Still, though, the above is feature equivalent to C++ 1z coroutines, but you have it now not years from now (for reference, if you want to write a generator which yields values to fibers in Boost.Fiber, simply write to some shared variable and notify a `boost::fibers::condition_variable` followed by a `boost::fibers::this_thread::yield()`, writing to a shared variable without locking is safe because Fibers are scheduled cooperatively on the thread on which they were created).
+
+So after all that, you might be wondering what any of this has to do with:
+
+* Threads.
+* i/o.
+* Callbacks, including `std::function`.
+
+We'll take the last first. Callbacks, in the form of an externally supplied C function pointer, are as old as the hills and in C++ are best represented as a `std::function` object. As a rule, the code which accepts externally supplied callbacks often has to impose various ''conditions'' on what the callback may do, so a classic condition imposed on callbacks is that reentrancy is not permitted (i.e. you may not use the object from which you are being called back) because maybe a mutex is being held, and reentering the same object would therefore deadlock. As with signal handlers on POSIX, if you wish to actually do anything useful you are then forced to use the callback to ''schedule'' the real callback work to occur elsewhere, where the classic pattern is scheduling the real work to a thread pool such that by the time the thread pool executes the real work implementation, the routine calling the callbacks will have completed and released any locks.
+
+However, scheduling work to thread pools is expensive. Firstly, there is a thread synchronisation which induces CPU cache coherency overheads, and secondly if the thread pool gets there too soon it will block on the mutex, thus inducing a kernel sleep which is several thousand CPU cycles. A much more efficient alternative therefore is to schedule the work to occur on the same thread after the thing doing the callback has exited and released any locks.
+
+This more efficient alternative is illustrated by this code taken from proposed Boost.AFIO:
+
+{{{#!c++
+struct immediate_async_ops
+{
+  typedef std::shared_ptr<async_io_handle> rettype;
+  typedef rettype retfuncttype();
+  size_t reservation;
+  std::vector<enqueued_task<retfuncttype>> toexecute;
+
+  immediate_async_ops(size_t reserve) : reservation(reserve) { }
+  // Returns a promise which is fulfilled when this is destructed
+  void enqueue(enqueued_task<retfuncttype> task)
+  {
+    if(toexecute.empty())
+      toexecute.reserve(reservation);
+    toexecute.push_back(task);
+  }
+  ~immediate_async_ops()
+  {
+    for(auto &i: toexecute)
+    {
+      i();
+    }
+  }
+private:
+  immediate_async_ops(const immediate_async_ops &);
+  immediate_async_ops &operator=(const immediate_async_ops &);
+  immediate_async_ops(immediate_async_ops &&);
+  immediate_async_ops &operator=(immediate_async_ops &&);
+};
+}}}
+
+What this does is lets you enqueue packaged tasks (here called enqueued tasks) into an `immediate_async_ops` accumulator. On destruction, it executes those stored tasks, setting their futures to any results of those tasks. What on earth might the use case be for this? AFIO needs to chain operations onto other operations, and if an operation is still pending one appends the continuation there, but if an operation has completed the continuation needs to be executed immediately. Unfortunately, in the core dispatch loop executing continuations there immediately creates race conditions, so what AFIO does is to create an `immediate_async_ops` instance at the very beginning of the call tree for any operation. Deep inside the engine, inside any mutexes or locks, it sends continuations which must be executed immediately to the `immediate_async_ops` instance. Once the operation is finished and the stack is unwinding, just before the operation API returns to user mode code it destructs the `immediate_async_ops` instance and therefore dispatches any continuations scheduled there without any locks or mutexes in the way.
+
+This is quite neat, and is very efficient, but it is also intrusive and requires all your internal APIs to pass around an `immediate_async_ops &` parameter which is ugly. This callback-on-the-same-thread pattern is of course exactly what coroutines/fibers give us -- ''a way of scheduling code to run at some point not now but soon on the same thread at the next ''''resumption point''''''. As with AFIO's `immediate_async_ops`, such a pattern can dramatically simplify a code engine implementation, and if you find your code expending much effort on dealing with error handling in a locking threaded environment where the complexity of handling all the outcome paths is exploding, you should very strong consider a deferred continuation based refactored design instead.
+
+Finally, what does making your code resumable ready have to do with i/o or threads? If you are not familiar with [http://en.wikipedia.org/wiki/Windows_Runtime WinRT] which is Microsoft's latest programming platform, well under WinRT ''nothing can block'' i.e. no synchronous APIs are available whatsoever. That of course renders most existing code bases impossible to port to WinRT, at least initially, but one interesting way to work around "nothing can block" is to write emulations of synchronous functions which dispatch into a coroutine scheduler instead. Your legacy code base is now 100% async, yet is written as if it never heard of async in its life. In other words, you write code which uses synchronous blocking functions without thinking about or worrying about async, but it is executed by the runtime as the right ordering of asynchronous operations automagically.
+
+What does WinRT have to do with C++? Well, C++ 1z should gain both coroutines and perhaps not long thereafter the Networking TS which is really ASIO, and ASIO already supports coroutines via Boost.Coroutine and Boost.Fiber. So if you are doing socket i/o you can already do "nothing can block" in C++ 1z. I'm hoping that AFIO will contribute asynchronous Filesystem and file i/o, and it is expected in the medium term that Boost.Thread will become resumable function friendly (Microsoft have a patch for Boost.Thread ready to go), so one could expect in not too distant a future that if you write exclusively using Boost facilities then your synchronously written C++ program could actually be entirely asynchronous in execution, just as on WinRT. That could potentially be ''huge'' as C++ suddenly becomes capable of Erlang type tasklet behaviour and design patterns, very exciting.
+
+Obviously everything I have just said should be taken with a pinch of salt as it all depends on WG21 decisions not yet made and a lot of Boost code not yet written. But I think this 100% asynchronous vision of the future is worth considering as you write your C++ 11/14 code today.
+
+
+[[Image(http://www.nedprod.com/feed/MuutBadge.php?path=/cppbestpractice/consider-being-c-resumabl,link=https://muut.com/cppbestpractice/#!/consider-being-c-resumabl,alt=Comments)]]
+
+
+== 19. Stuff still being pondered for recommendation here ==
+
+reviewable.io - enough gerrit on github for real world use?
+
+Package managers - biicode etc.
+
+
+== 20. Stuff decided to not be recommended here but might be useful for some people ==
+
+Nothing yet.
