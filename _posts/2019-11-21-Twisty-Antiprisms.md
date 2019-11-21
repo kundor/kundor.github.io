@@ -11,6 +11,7 @@ Unless you pick one particular height, you end up with isosceles triangles on th
 (There's one height that gives you equilateral triangles.)
 
 Here's a top view of such square and pentagonal antiprisms (where the base faces are opaque but the triangles are transparent):
+
 ![top-down view of square antiprism](/images/squaptop.png)
 ![top-down view of pentagonal antiprism](/images/pentaptop.png)
 
@@ -30,6 +31,7 @@ In each triangle, one of the edges joining the two polygons is scaled to match t
 and the other one is a different length $b$.
 Then each vertex is in three edges of length $s$, and one edge of length $b$,
 like this:
+
 ![neighborhood of a vertex](/images/twistyside.png)
 
 You do this by only twisting the bottom polygon a little bit with respect to the top one,
@@ -41,6 +43,7 @@ However! We can't make just _any_ isosceles triangle the side of an antiprism in
 It only works if the ratio of the base to the leg is less than $\sqrt{2}$.
 
 To see this, you can consider the creation of a twisty antiprism as starting from the uniform prism:
+
 ![side of a prism](/images/prismside.png)
 
 This has square sides; the length of the diagonal is $\sqrt{2}$.
