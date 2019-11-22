@@ -39,7 +39,7 @@ like this:
 You do this by only twisting the bottom polygon a little bit with respect to the top one,
 so that one edge is short, and one is long. The top view is this:
 
-<img style="text-align: center" src="/images/twistytop.png" alt="top-down view of twisted square prism](/images/twistytop.png" />
+![top-down view of twisted square prism](/images/twistytop.png){: .center-image }
 
 However! We can't make just _any_ isosceles triangle the side of an antiprism in this way. (As opposed to the "usual" way, where you _can_ get any isosceles triangle, by varying the height.)
 It only works if the ratio of the base to the leg is less than $\sqrt{2}$.
