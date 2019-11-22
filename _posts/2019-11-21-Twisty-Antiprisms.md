@@ -32,7 +32,9 @@ and the other one is a different length $b$.
 Then each vertex is in three edges of length $s$, and one edge of length $b$,
 like this:
 
+<div style="text-align: center">
 ![neighborhood of a vertex](/images/twistyside.png)
+</div>
 
 You do this by only twisting the bottom polygon a little bit with respect to the top one,
 so that one edge is short, and one is long. The top view is this:
