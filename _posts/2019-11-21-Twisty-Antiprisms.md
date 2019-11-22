@@ -58,7 +58,7 @@ I tried to construct one with isosceles triangles whose base is the golden ratio
 
 ![photo of a twisted antiprism with buckled sides](/images/buckled-golden-twisty.jpg){: .center-image }
 
-This came up when I was thinking about vertex-transitive 4-dimensional polytopes whose facets are all [equilateral pentagonal pyramids](https://en.m.wikipedia.org/wiki/Pentagonal_pyramid).
-It turns out the [vertex figure](https://en.m.wikipedia.org/wiki/Vertex_figure) of such a beast would have to be exactly that: a pentagonal twisty antiprism with base sides of length 1 and diagonals of length $$\phi$$.
+This came up when I was thinking about vertex-transitive 4-dimensional polytopes whose facets are all [equilateral pentagonal pyramids](https://en.wikipedia.org/wiki/Pentagonal_pyramid).
+It turns out the [vertex figure](https://en.wikipedia.org/wiki/Vertex_figure) of such a beast would have to be exactly that: a pentagonal twisty antiprism with base sides of length 1 and diagonals of length $$\phi$$.
 
 Since there's no such thing, there's also no vertex-transitive equilateral 4-polytope made of pentagonal pyramids.
