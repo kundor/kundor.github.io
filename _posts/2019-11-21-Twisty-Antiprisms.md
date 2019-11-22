@@ -32,9 +32,7 @@ and the other one is a different length $b$.
 Then each vertex is in three edges of length $s$, and one edge of length $b$,
 like this:
 
-<div style="text-align: center">
-<img src="/images/twistyside.png" alt="neighborhood of a vertex" />
-</div>
+![neighborhood of a vertex](/images/twistyside.png){: .center-image }
 
 You do this by only twisting the bottom polygon a little bit with respect to the top one,
 so that one edge is short, and one is long. The top view is this:
@@ -46,19 +44,19 @@ It only works if the ratio of the base to the leg is less than $\sqrt{2}$.
 
 To see this, you can consider the creation of a twisty antiprism as starting from the uniform prism:
 
-![side of a prism](/images/prismside.png)
+![side of a prism](/images/prismside.png){: .center-image }
 
 This has square sides; the length of the diagonal is $\sqrt{2}$.
 Rotating the bottom slightly makes edge $e$ get longer, and the diagonal $d$ get shorter, and also breaks the square face into two non-coplanar triangles. The height between the base polygons can be reduced to make edge $e$ have length one again—slightly shortening $d$ also. Now we have a twisty antiprism; and the base length is shorter than $\sqrt{2}$.
 
 Continuing the rotation keeps shortening $d$ until we achieve equality, right when we've rotated halfway to the next vertex. If we keep going we can have the base side be shorter than 1, and it gets arbitrarily short as we rotate nearly to the next vertex (and the two bases nearly come together).
 
-![twisting a prism into a twisty antiprism](/images/twisting.gif)
+![twisting a prism into a twisty antiprism](/images/twisting.gif){: .center-image }
 
 So, this argument shows that wider isosceles triangles won't work: but what actually goes wrong?
 I tried to construct one with isosceles triangles whose base is the golden ratio, $\phi$, of the legs. The golden ratio is larger than $\sqrt{2}$, so it didn't work: in fact the triangles buckled in, so the result was not convex.
 
-![photo of a twisted antiprism with buckled sides](/images/buckled-golden-twisty.jpg)
+![photo of a twisted antiprism with buckled sides](/images/buckled-golden-twisty.jpg){: .center-image }
 
 This came up when I was thinking about vertex-transitive 4-dimensional polytopes whose facets are all [equilateral pentagonal pyramids](https://en.m.wikipedia.org/wiki/Pentagonal_pyramid).
 It turns out the [vertex figure] (https://en.m.wikipedia.org/wiki/Vertex_figure) of such a beast would have to be exactly that: a pentagonal twisty antiprism with base sides of length 1 and diagonals of length $\phi$.
