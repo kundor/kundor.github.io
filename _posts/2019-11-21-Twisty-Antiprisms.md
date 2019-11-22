@@ -13,7 +13,7 @@ Unless you pick one particular height, you end up with isosceles triangles on th
 Here's a top view of such square and pentagonal antiprisms (where the base faces are opaque but the triangles are transparent):
 
 ![top-down view of square antiprism](/images/squaptop.png)
-![top-down view of pentagonal antiprism](/images/pentaptop.png)
+![top-down view of pentagonal antiprism](/images/pentaptop.png){: align="right" }
 
 The base sides of each isosceles triangle are one of the sides of the base polygons,
 and the "up/down" sides are a different length. In fact, if the base polygon side length is $$b$$,
