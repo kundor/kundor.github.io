@@ -3,7 +3,7 @@ layout: post
 title: Twisty Antiprisms
 ---
 
-There's one natural way to make [antiprisms](https://en.wikipedia.org/wiki/Antiprism)
+There's an easy way to make [antiprisms](https://en.wikipedia.org/wiki/Antiprism)
 whose sides are isosceles triangles:
 take two congruent regular $$n$$-gons, rotate one so its vertices are halfway between
 the original positions (that is, by 1/(2n)-th of a circle), and lift one up.
@@ -46,7 +46,7 @@ To see this, you can consider the creation of a twisty antiprism as starting fro
 
 ![side of a prism](/images/prismside.png){: .center-image }
 
-This has square sides; the length of the diagonal is $$sqrt{2}$$.
+This has square sides; the length of the diagonal is $$\sqrt{2}$$.
 Rotating the bottom slightly makes edge $$e$$ get longer, and the diagonal $$d$$ get shorter, and also breaks the square face into two non-coplanar triangles. The height between the base polygons can be reduced to make edge $$e$$ have length one again—slightly shortening $$d$$ also. Now we have a twisty antiprism; and the base length is shorter than $$\sqrt{2}$$.
 
 Continuing the rotation keeps shortening $$d$$ until we achieve equality, right when we've rotated halfway to the next vertex. If we keep going we can have the base side be shorter than 1, and it gets arbitrarily short as we rotate nearly to the next vertex (and the two bases nearly come together).
@@ -59,6 +59,6 @@ I tried to construct one with isosceles triangles whose base is the golden ratio
 ![photo of a twisted antiprism with buckled sides](/images/buckled-golden-twisty.jpg){: .center-image }
 
 This came up when I was thinking about vertex-transitive 4-dimensional polytopes whose facets are all [equilateral pentagonal pyramids](https://en.m.wikipedia.org/wiki/Pentagonal_pyramid).
-It turns out the [vertex figure] (https://en.m.wikipedia.org/wiki/Vertex_figure) of such a beast would have to be exactly that: a pentagonal twisty antiprism with base sides of length 1 and diagonals of length $$\phi$$.
+It turns out the [vertex figure](https://en.m.wikipedia.org/wiki/Vertex_figure) of such a beast would have to be exactly that: a pentagonal twisty antiprism with base sides of length 1 and diagonals of length $$\phi$$.
 
 Since there's no such thing, there's also no vertex-transitive equilateral 4-polytope made of pentagonal pyramids.
