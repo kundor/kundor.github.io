@@ -256,18 +256,18 @@ nav {
 
   a {
     margin-left: 20px;
-    color: #FFCC00;
+    color: #443B9E;
     text-align: right;
     font-weight: 300;
     letter-spacing: 1px;
 
     &:hover {
-        color: #FFEB9B;
+        color: #663399;
     }
 
     @include mobile {
       margin: 0 10px;
-      color: #FFCC00;
+      color: #443B9E;
     }
   }
 }
@@ -289,7 +289,7 @@ nav {
 .post {
   blockquote {
     margin: 1.8em .8em;
-    border-left: 3px solid #ffcc00;
+    border-left: 3px solid #663399;
     padding: 0.1em 1em;
     font-size: 22px;
     font-style: italic;
