@@ -18,9 +18,11 @@ html {
 }
 
 body {
-	background: $white;
   font: 18px/1.4 $helvetica;
-  color: $darkGray;
+  color: #f0e7d5;
+  background: #252525;
+  background-attachment: fixed !important;
+  background: linear-gradient(#2a2a29, #1c1c1c);`
 }
 
 .container {
@@ -32,7 +34,7 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: $helveticaNeue;
-  color: $darkerGray;
+  color: #e8e8e8;
   font-weight: bold;
 
   line-height: 1.7;
@@ -61,7 +63,6 @@ h3 {
 
 h4 {
   font-size: 18px;
-  color: $gray;
 }
 
 p {
@@ -70,10 +71,9 @@ p {
 
 a {
   color: $blue;
-  text-decoration: none;
-	cursor: pointer;
+  cursor: pointer;
   &:hover, &:active {
-    color: $blue;
+    color: #55AAFF;
   }
 }
 
@@ -83,7 +83,7 @@ ul, ol {
 }
 
 ul {
-  list-style-type: disc;
+  list-style-image:url('/images/bullet.png');
 }
 
 ol {
@@ -122,12 +122,12 @@ img {
 
 // Specify the color of the selection
 ::-moz-selection {
-  color: $black;
-  background: $lightGray;
+  color: $white;
+  background: $darkGray;
 }
 ::selection {
-  color: $black;
-  background: $lightGray;
+  color: $white;
+  background: $darkGray;
 }
 
 // Nicolas Gallagher's micro clearfix hack
@@ -140,6 +140,37 @@ img {
 
 .clearfix:after {
     clear: both;
+}
+
+// Tables from Jekyll-theme-midnight
+table {
+  width:100%;
+  border-collapse:collapse;
+}
+
+th {
+  text-align:left;
+  padding:5px 10px;
+  border-bottom:1px solid #434343;
+  color: #b6b6b6;
+}
+
+td {
+  text-align:left;
+  padding:5px 10px;
+  border-bottom:1px solid #434343;
+}
+
+hr {
+  border: 0;
+  outline: none;
+  height: 3px;
+  background: transparent url('/images/hr.gif') center center repeat-x;
+  margin: 0 0 20px;
+}
+
+dt {
+  color:#F0E7D5;
 }
 
 /*********************/
@@ -192,7 +223,7 @@ img {
 
 .site-name {
   margin: 0;
-  color: $darkGray;
+  color: #FFF5E2;
   cursor: pointer;
   font-family: $helveticaNeue;
   font-weight: 300;
@@ -202,7 +233,7 @@ img {
 
 .site-description {
   margin: -5px 0 0 0;
-  color: $gray;
+  color: #D7CFBE;
   font-size: 16px;
 
   @include mobile {
@@ -225,14 +256,18 @@ nav {
 
   a {
     margin-left: 20px;
-    color: $darkGray;
+    color: #FFCC00;
     text-align: right;
     font-weight: 300;
     letter-spacing: 1px;
 
+    &:hover {
+        color: #FFEB9B;
+    }
+
     @include mobile {
       margin: 0 10px;
-      color: $blue;
+      color: #FFCC00;
     }
   }
 }
@@ -243,7 +278,7 @@ nav {
 
 .posts > .post {
   padding-bottom: 2em;
-  border-bottom: 1px solid $lightGray;
+  border-bottom: 1px solid $darkGray;
 }
 
 .posts > .post:last-child {
@@ -254,9 +289,8 @@ nav {
 .post {
   blockquote {
     margin: 1.8em .8em;
-    border-left: 2px solid $gray;
+    border-left: 3px solid #ffcc00;
     padding: 0.1em 1em;
-    color: $gray;
     font-size: 22px;
     font-style: italic;
   }
@@ -275,7 +309,7 @@ nav {
   margin-top: 50px;
   border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
-  background-color: $lightGray;
+  background-color: $darkGray;
 }
 
 footer {
