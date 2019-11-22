@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Twisty Antiprisms
+category: Polytopes
 ---
 
 There's an easy way to make [antiprisms](https://en.wikipedia.org/wiki/Antiprism)
