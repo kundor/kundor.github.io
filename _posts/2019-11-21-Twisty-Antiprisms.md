@@ -33,7 +33,7 @@ Then each vertex is in three edges of length $s$, and one edge of length $b$,
 like this:
 
 <div style="text-align: center">
-![neighborhood of a vertex](/images/twistyside.png)
+<img src="/images/twistyside.png" alt="neighborhood of a vertex" />
 </div>
 
 You do this by only twisting the bottom polygon a little bit with respect to the top one,
