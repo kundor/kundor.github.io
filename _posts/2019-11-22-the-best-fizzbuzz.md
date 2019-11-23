@@ -8,7 +8,7 @@ The hard part of FizzBuzz is the newlines.
 
 If you're not aware, FizzBuzz is a programming exercise: print out the numbers from 1 to 100, but for each multiple of 3 print "Fizz" instead, and for each multiple of 5 print "Buzz" instead. At numbers which are multiples of both 3 and 5, print "FizzBuzz".
 
-This is supposed to be a pretty basic challenge, just to demonstrate wheter someone can program their way out of a paper sack. But it can be surprisingly tricky—and strangely enough, it's often trickier for _better_ programmers! That's because FizzBuzz hides an _elegance trap_.
+This is supposed to be a pretty basic challenge, just to demonstrate whether someone can program their way out of a paper sack. But it can be surprisingly tricky—and strangely enough, it's often trickier for _better_ programmers! That's because FizzBuzz hides an _elegance trap_.
 
 What do I mean? Well, a basic implementation might look like this, in pseudocode:
 
@@ -41,6 +41,13 @@ for i in range(1, 101):
 ~~~
 
 This generalizes to more factors really well—just add `7: "Bazz"` in the dictionary.
+
+The last line might be a bit mysterious if you're not familiar with Python.
+`''.join()` concatenates a sequence of strings. (`' '.join()` would concatenate with spaces in
+between, and `', '.join()` would put commas in between.)
+`for d in wurdz` goes through each of the keys in the dictionary `wurdz`—namely 3 and 5.
+The string is truthy if it's nonempty, so its value is used for the result
+of the `or`-expression; if it's empty, the value `i` is used instead.
 
 Unfortunately it's a bit harder to express in some other languages, like C++.
 You can use the same algorithm, of course, it just ends up being more verbose.
