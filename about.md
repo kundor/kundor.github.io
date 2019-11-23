@@ -9,8 +9,10 @@ at [CU Boulder](http://colorado.edu/).
 
 ### More Information
 
-My research is in [discrete geometry](http://en.wikipedia.org/wiki/Discrete_geometry).
-I also like graph theory, combinatorics, Python, GNU, and science fiction.
+My research is in [discrete geometry](https://en.wikipedia.org/wiki/Discrete_geometry).
+I also like graph theory, combinatorics, [Python](https://python.org), [GNU](https://gnu.org), science fiction,
+mythology, the [ACLU](https://aclu.org), the [FSF](https://fsf.org),
+strategy board games, and the [OEIS](https://oeis.org).
 
 ### Contact me
 
