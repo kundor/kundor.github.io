@@ -75,7 +75,7 @@ So the 3-faces must be regular-faced and circumscribable,
 which means they can only be among the Platonic solids, the Archimedean solids, 25 out of the 92 Johnson solids,
 an $$n$$-gonal uniform prism, or an $$n$$-gonal equilateral antiprism.
 
-### Isogonal + Isotoxal => completely well-centered?
+### Isogonal + Isotoxal ⇒ completely well-centered?
 
 Could it be that a polytope which is both vertex- and edge-transitive
 is completely well-centered?
@@ -94,7 +94,7 @@ J1, the square pyramid; J2, the pentagonal pyramid; or J6, the pentagonal rotund
 We saw in [Twisty Antiprisms](/Twisty-Antiprisms/) that there's no vertex-transitive
 4-polytope made only of J2. But we haven't ruled out a mix of J2 and other facets.
 
-### Well-centered j-faces => well-centered (j+1)-faces?
+### Well-centered j-faces ⇒ well-centered (j+1)-faces?
 
 Could it be true that a vertex-transitive polytope
 with well-centered 2-faces always has well-centered 3-faces?
