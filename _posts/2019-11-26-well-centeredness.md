@@ -11,7 +11,7 @@ Circumscribable polygons are also known as cyclic polygons.
 There are circumscribable polytopes which are not well-centered, like this isosceles trapezoid:
 
 {::nomarkdown}
-<svg viewBox="-60 -60 120 120" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-50 -50 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" height=300px width=300px>
 <circle r="50" fill="none" stroke="white" stroke-width="1"/>
 <polygon points="30,-40 -30,-40 -40,-30 40,-30" fill="yellow" stroke="white" />
 </svg>
@@ -19,7 +19,7 @@ There are circumscribable polytopes which are not well-centered, like this isosc
 
 Or the equilateral pentagonal pyramid (Johnson solid J2):
 
-[pentagonal pyramid in it circumsphere](/images/J2.png)
+![pentagonal pyramid in its circumsphere](/images/J2.png)
 
 A polytope is _vertex-transitive_ if the polytope can be rotated or reflected to take any vertex to any other vertex, while the whole polytope looks the same as when you started; then we say "the polytope's symmetries act transitively on its vertices". This is also known as being [isogonal](https://en.wikipedia.org/wiki/Isogonal_figure).
 
