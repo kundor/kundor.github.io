@@ -11,7 +11,7 @@ Circumscribable polygons are also known as cyclic polygons.
 There are circumscribable polytopes which are not well-centered, like this isosceles trapezoid:
 
 {::nomarkdown}
-<svg viewBox="-50 -50 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" height=300px width=300px>
+<svg viewBox="-50 -50 100 50" version="1.1" xmlns="http://www.w3.org/2000/svg" height=150px width=300px>
 <circle r="50" fill="none" stroke="white" stroke-width="1"/>
 <polygon points="30,-40 -30,-40 -40,-30 40,-30" fill="yellow" stroke="white" />
 </svg>
@@ -28,7 +28,7 @@ But there are also well-centered polytopes which aren't vertex-transitive,
 like this pentagon:
 
 {::nomarkdown}
-<svg viewBox="-60 -60 120 120" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="-50 -50 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" height=300px width=300px>
 <circle r="50" fill="none" stroke="white" stroke-width="1"/>
 <polygon points="30,40 -30,40 -50,0 0,-50 50,0" fill="yellow" stroke="white" />
 </svg>
@@ -47,7 +47,7 @@ being the isosceles trapezoid we saw above.
 Just attach four of them in a cycle, alternating long and short edges;
 the top and bottom will form rectangles, oriented perpendicular to eachother:
 
-[spinning disphenoid frustum](/images/isotrapfrust.gif)
+![spinning disphenoid frustum](/images/isotrapfrust.gif)
 
 (This shape could be called a _disphenoid frustum_, if you're so inclined. It's also
 a [prismoid](http://mathworld.wolfram.com/Prismoid.html).)
