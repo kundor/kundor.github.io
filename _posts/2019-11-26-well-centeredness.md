@@ -13,7 +13,7 @@ There are circumscribable polytopes which are not well-centered, like this isosc
 {::nomarkdown}
 <svg viewBox="-50 -50 100 50" version="1.1" xmlns="http://www.w3.org/2000/svg" height=150px width=300px>
 <circle r="50" fill="none" stroke="white" stroke-width=".8"/>
-<polygon points="30,-40 -30,-40 -42.708,-26 42.708,-26" fill="yellow" stroke="white" />
+<polygon points="30,-40 -30,-40 -42.7,-26 42.7,-26" fill="yellow" stroke="white" stroke-width=".5"/>
 </svg>
 {:/}
 
