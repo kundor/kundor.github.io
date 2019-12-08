@@ -12,7 +12,8 @@ at [CU Boulder](http://colorado.edu/).
 My research is in [discrete geometry](https://en.wikipedia.org/wiki/Discrete_geometry).
 I also like graph theory, combinatorics, [Python](https://python.org), [GNU](https://gnu.org), science fiction,
 mythology, the [ACLU](https://aclu.org), the [FSF](https://fsf.org),
-strategy board games, and the [OEIS](https://oeis.org).
+strategy board games, [Nethack](https://nethack.org/), [Vim](https://www.vim.org/), webcomics,
+and the [OEIS](https://oeis.org).
 
 ### Contact me
 
