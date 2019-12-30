@@ -5,31 +5,32 @@
 
 #macro v_equal(v1,v2) ((v1.x=v2.x)&(v1.y=v2.y)&(v1.z=v2.z)) #end
 
-#macro col_to_tex(col, elem_tex_map, elem_col_map, def_tex)
-   #local typ=0;
-   #if(col.y>=0) #local typ=1; #end
-   #if(!typ & col.y=-1)
-      #if(col.x<dimension_size(elem_tex_map,1))
-         #ifdef(elem_tex_map[col.x]) #local typ=2; #end
-      #end
-      #if(!typ & col.x<dimension_size(elem_col_map,1))
-         #ifdef(elem_col_map[col.x]) #local typ=3; #end
-      #end
-   #end
-   #switch(typ)
-      #case(0) texture{ def_tex } #break;
-      #case(1) texture{ pigment{ rgbt col}} #break;
-      #case(2) texture{ elem_tex_map[-col.x]} #break;
-      #case(3) texture{ pigment{ color elem_col_map[-col.x]}} #break;
-   #end
-#end
-
 #macro disp_edge(edge, col)
    #if(!v_equal(verts[edges[edge][0]], verts[edges[edge][1]]) )
       cylinder{verts[edges[edge][0]] verts[edges[edge][1]] edge_sz
-         col_to_tex(col, tex_map, col_map, edge_tex)
+         texture { pigment { rgbt col } }
       }
    #end
+#end
+
+#macro raythru(pt)
+   sphere{ pt vert_sz texture{ pigment { rgbt <.9, .5, .2, 0> } } }
+   cylinder{<0,0,0> 5*pt
+     0.003 texture { pigment { rgbt <1, 1, 1, 0> } }
+   }
+#end
+
+
+#macro triface(v1, v2, v3)
+   triangle { v1 v2 v3 texture { pigment { rgbt f_col } } }
+   #declare ctr = (v1 + v2 + v3) / 3;
+   raythru(ctr)
+#end
+
+#macro squareface(v1, v2, v3, v4)
+   polygon { 4, v1 v2 v3 v4 texture { pigment { rgbt f_col } } }
+   #declare ctr = (v1 + v2 + v3 + v4) / 4;
+   raythru(ctr)
 #end
 
 // Display values
@@ -52,7 +53,7 @@
 #declare tex_map = array[1]; // Default texmap
 
 // Array of vertex coordinates
-#declare num_verts = 14;
+#declare num_verts = 13;
 #declare verts = array [num_verts] {
     <1/sqrt(2-sqrt(2)), 0, 1/2>,
     <cos(pi/4)/sqrt(2-sqrt(2)), sin(pi/4)/sqrt(2-sqrt(2)), 1/2>,
@@ -66,8 +67,7 @@
     <cos(1*pi/2+pi/8)/sqrt(2), sin(1*pi/2+pi/8)/sqrt(2), (1+sqrt(2))/2>,
     <cos(2*pi/2+pi/8)/sqrt(2), sin(2*pi/2+pi/8)/sqrt(2), (1+sqrt(2))/2>,
     <cos(3*pi/2+pi/8)/sqrt(2), sin(3*pi/2+pi/8)/sqrt(2), (1+sqrt(2))/2>,
-    <0,0,0>,
-    <sqrt(1 + 1/sqrt(2))/4, sqrt(5 + 7/sqrt(2))/4, (2+sqrt(2))/4>
+    <0,0,0>
 }
 
 // Array of edge indexes
@@ -99,19 +99,19 @@
 #declare f_col = <0.901961, 0.45098, 0, 0.6>;
 
 // Array of face vertex counts and indexes
-   triangle { verts[0] verts[1] verts[8] col_to_tex(f_col, tex_map, col_map, face_tex) }
-   triangle { verts[2] verts[3] verts[9] col_to_tex(f_col, tex_map, col_map, face_tex) }
-   triangle { verts[4] verts[5] verts[10] col_to_tex(f_col, tex_map, col_map, face_tex) }
-   triangle { verts[6] verts[7] verts[11] col_to_tex(f_col, tex_map, col_map, face_tex) }
-   polygon { 4, verts[1] verts[2] verts[9] verts[8] col_to_tex(f_col, tex_map, col_map, face_tex) }
-   polygon { 4, verts[3] verts[4] verts[10] verts[9] col_to_tex(f_col, tex_map, col_map, face_tex) }
-   polygon { 4, verts[5] verts[6] verts[11] verts[10] col_to_tex(f_col, tex_map, col_map, face_tex) }
-   polygon { 4, verts[7] verts[0] verts[8] verts[11] col_to_tex(f_col, tex_map, col_map, face_tex) }
-   polygon { 4, verts[8] verts[9] verts[10] verts[11] col_to_tex(f_col, tex_map, col_map, face_tex) }
+   triface(verts[0], verts[1], verts[8])
+   triface(verts[2], verts[3], verts[9])
+   triface(verts[4], verts[5], verts[10])
+   triface(verts[6], verts[7], verts[11])
+   squareface(verts[1], verts[2], verts[9], verts[8])
+   squareface(verts[3], verts[4], verts[10], verts[9])
+   squareface(verts[5], verts[6], verts[11], verts[10])
+   squareface(verts[7], verts[0], verts[8], verts[11])
+   squareface(verts[8], verts[9], verts[10], verts[11])
 
    #declare i=0;
    #while (i<num_verts)
-      sphere{ verts[i] vert_sz col_to_tex(vert_col, tex_map, col_map, vert_tex) }
+      sphere{ verts[i] vert_sz texture{ pigment { rgbt vert_col } } }
       #declare i=i+1;
       #end
 
