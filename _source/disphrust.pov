@@ -35,8 +35,8 @@
 
 #macro raythru(pt)
    sphere{ pt vert_sz texture{ pigment { rgbt <.9, .5, .2, 0> } } }
-   cylinder{<0,0,0> 5*pt
-     0.006 texture { pigment { rgbt <1, 1, 1, 0> } }
+   cylinder{<0,0,0> 10*pt
+     0.01 texture { pigment { rgbt <1, 1, 1, 0> } }
    }
 #end
 
@@ -44,13 +44,13 @@
    polygon { 4, verts[v1] verts[v2] verts[v3] verts[v4] texture { pigment { rgbt col } } }
    #local ctr = Circumcenter(verts[v1], verts[v2], verts[v3]);
    #local drad = vlength(ctr - verts[v1]);
-   disc { ctr ctr drad+.006 drad-.006 texture{ pigment{ color White } finish { diffuse 1.0}}}
+   disc { ctr ctr drad+.007 drad-.007 texture{ pigment{ color White } finish { diffuse 1.0}}}
    raythru(ctr)
 #end
 
 // Display values
    // Size (or radius) of elements
-   #declare vert_sz = 0.05;
+   #declare vert_sz = 0.06;
    #declare edge_sz = 0.03; 
 
    // Colour of elements (used to set up default textures
