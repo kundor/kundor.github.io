@@ -23,7 +23,7 @@ whose vertices are on a path $$P_0, \dotsc, P_d$$ with mutually orthogonal edges
 <figcaption>2-dimensional orthoscheme</figcaption>
 </figure>
 <figure align="right">
-<img src="/images/3dortho.png" alt="3-dimensional orthoscheme" align="right" />
+<img src="/images/3dortho.png" alt="3-dimensional orthoscheme" />
 <figcaption>3-dimensional orthoscheme</figcaption>
 </figure>
 </div>
