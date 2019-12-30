@@ -2,6 +2,7 @@
 
 #include "colors.inc"
 #include "math.inc"
+#include "transforms.inc"
 
 #macro Circumcenter (Corner_1, Corner_2, Corner_3)
 #local C1 = Corner_1;
@@ -44,7 +45,11 @@
    polygon { 4, verts[v1] verts[v2] verts[v3] verts[v4] texture { pigment { rgbt col } } }
    #local ctr = Circumcenter(verts[v1], verts[v2], verts[v3]);
    #local drad = vlength(ctr - verts[v1]);
-   disc { ctr ctr drad+.007 drad-.007 texture{ pigment{ color White } finish { diffuse 1.0}}}
+   torus { drad 0.015
+       texture{ pigment{ color White } finish { ambient 0.4} }
+       Reorient_Trans(y, ctr)
+       translate ctr
+   }
    raythru(ctr)
 #end
 
