@@ -146,9 +146,9 @@ global_settings{
   camera { location <0,10,1>
            sky <0,0,1>
            look_at <0,0,0>
-           rotate <0, 0, 360*clock>
+           rotate <0, 0, clock>
          }
 
    light_source {<.5, 7, 7> color <1,1,1> shadowless
-           rotate <0, 0, 360*clock>
+           rotate <0, 0, clock>
        }
