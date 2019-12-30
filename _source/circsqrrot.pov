@@ -142,4 +142,6 @@ global_settings{
            rotate <0, 0, 360*clock>
          }
 
-   light_source {<0.2, 7, 7> color <1,1,1> shadowless}
+   light_source {<0.2, 7, 7> color <1,1,1> shadowless
+           rotate <0, 0, 360*clock>
+       }
