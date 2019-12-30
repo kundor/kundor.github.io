@@ -21,7 +21,7 @@
 
    (C1+C2)/2 +sqrt( Radius*Radius - 1/4*vlength(C2-C1)*vlength(C2-C1))
    * ( vcross( vnormalize(vcross((C2-C1),(C3-C1))), V1) )
-#end   
+#end
 
 #macro v_equal(v1,v2) ((v1.x=v2.x)&(v1.y=v2.y)&(v1.z=v2.z)) #end
 
@@ -42,7 +42,10 @@
 
 #macro fourface(v1, v2, v3, v4, col)
    polygon { 4, verts[v1] verts[v2] verts[v3] verts[v4] texture { pigment { rgbt col } } }
-   raythru(Circumcenter(verts[v1], verts[v2], verts[v3]))
+   #local ctr = Circumcenter(verts[v1], verts[v2], verts[v3]);
+   #local drad = vlength(ctr - verts[v1]);
+   disc { ctr ctr drad+.006 drad-.006 texture{ pigment{ color White } finish { diffuse 1.0}}}
+   raythru(ctr)
 #end
 
 // Display values
