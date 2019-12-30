@@ -5,10 +5,10 @@
 
 #macro v_equal(v1,v2) ((v1.x=v2.x)&(v1.y=v2.y)&(v1.z=v2.z)) #end
 
-#macro disp_edge(edge, col)
+#macro disp_edge(edge)
    #if(!v_equal(verts[edges[edge][0]], verts[edges[edge][1]]) )
       cylinder{verts[edges[edge][0]] verts[edges[edge][1]] edge_sz
-         texture { pigment { rgbt col } }
+         edge_tex
       }
    #end
 #end
@@ -20,15 +20,14 @@
    }
 #end
 
-
 #macro triface(v1, v2, v3)
-   triangle { v1 v2 v3 texture { pigment { rgbt f_col } } }
+   triangle { v1 v2 v3 face_tex }
    #declare ctr = (v1 + v2 + v3) / 3;
    raythru(ctr)
 #end
 
 #macro squareface(v1, v2, v3, v4)
-   polygon { 4, v1 v2 v3 v4 texture { pigment { rgbt f_col } } }
+   polygon { 4, v1 v2 v3 v4 face_tex }
    #declare ctr = (v1 + v2 + v3 + v4) / 4;
    raythru(ctr)
 #end
@@ -42,15 +41,12 @@
    // Colour of elements (used to set up default textures
    #declare vert_col = <0.901961, 0.45098, 0, 0>;
    #declare edge_col = <0.8, 0.6, 0.8, 0>; // <0.8, 0.6, 0.8, 0>
-   #declare face_col = <0.8, 0.901961, 0.901961, 0>; // <0.8, 0.901961, 0.901961, 0>
+   #declare face_col = <0.8, 0.901961, 0.901961, 0.6>; // <0.8, 0.901961, 0.901961, 0>
 
    // Texture of elements
    #declare vert_tex=texture{ pigment{ rgbt vert_col}}
    #declare edge_tex=texture{ pigment{ rgbt edge_col}}
    #declare face_tex=texture{ pigment{ rgbt face_col}}
-
-#declare col_map = array[1]; // Default colourmap
-#declare tex_map = array[1]; // Default texmap
 
 // Array of vertex coordinates
 #declare num_verts = 13;
@@ -95,9 +91,6 @@
    {7, 11}
 }
 
-// face colours
-#declare f_col = <0.901961, 0.45098, 0, 0.6>;
-
 // Array of face vertex counts and indexes
    triface(verts[0], verts[1], verts[8])
    triface(verts[2], verts[3], verts[9])
@@ -111,14 +104,14 @@
 
    #declare i=0;
    #while (i<num_verts)
-      sphere{ verts[i] vert_sz texture{ pigment { rgbt vert_col } } }
+      sphere{ verts[i] vert_sz vert_tex }
       #declare i=i+1;
       #end
 
 // Display edge elements
    #declare i=0;
    #while (i<num_edges)
-      disp_edge(i, edge_col)
+      disp_edge(i)
       #declare i=i+1;
       #end
 
