@@ -8,7 +8,7 @@
 #macro disp_edge(edge)
    #if(!v_equal(verts[edges[edge][0]], verts[edges[edge][1]]) )
       cylinder{verts[edges[edge][0]] verts[edges[edge][1]] edge_sz
-         edge_tex
+         texture{ edge_tex }
       }
    #end
 #end
@@ -21,13 +21,13 @@
 #end
 
 #macro triface(v1, v2, v3)
-   triangle { v1 v2 v3 face_tex }
+   triangle { v1 v2 v3 texture{ pigment { rgbt <1, 1, 0, .6> } } }
    #declare ctr = (v1 + v2 + v3) / 3;
    raythru(ctr)
 #end
 
 #macro squareface(v1, v2, v3, v4)
-   polygon { 4, v1 v2 v3 v4 face_tex }
+   polygon { 4, v1 v2 v3 v4 texture { pigment { rgbt <0, 0, 1, .6> } } }
    #declare ctr = (v1 + v2 + v3 + v4) / 4;
    raythru(ctr)
 #end
@@ -41,12 +41,10 @@
    // Colour of elements (used to set up default textures
    #declare vert_col = <0.901961, 0.45098, 0, 0>;
    #declare edge_col = <0.8, 0.6, 0.8, 0>; // <0.8, 0.6, 0.8, 0>
-   #declare face_col = <0.8, 0.901961, 0.901961, 0.6>; // <0.8, 0.901961, 0.901961, 0>
 
    // Texture of elements
    #declare vert_tex=texture{ pigment{ rgbt vert_col}}
    #declare edge_tex=texture{ pigment{ rgbt edge_col}}
-   #declare face_tex=texture{ pigment{ rgbt face_col}}
 
 // Array of vertex coordinates
 #declare num_verts = 13;
@@ -104,7 +102,7 @@
 
    #declare i=0;
    #while (i<num_verts)
-      sphere{ verts[i] vert_sz vert_tex }
+      sphere{ verts[i] vert_sz texture { vert_tex } }
       #declare i=i+1;
       #end
 
@@ -138,9 +136,10 @@ global_settings{
     assumed_gamma 1.2
 }
 
-  camera { location <0,3.2,0.9>
+  camera { location <0,3.2,1.2>
            sky <0,0,1>
            look_at <0,0,0>
+           rotate <0, 0, 360*clock>
          }
 
-   light_source {<0.1, 3, 1> color <1,1,1> shadowless}
+   light_source {<0.2, 6, 6> color <1,1,1> shadowless}
