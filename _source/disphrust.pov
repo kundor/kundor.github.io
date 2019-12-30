@@ -35,7 +35,7 @@
 #end
 
 #macro raythru(pt)
-   sphere{ pt vert_sz texture{ pigment { rgbt <.9, .5, .2, 0> } } }
+   sphere{ pt 0.07 texture{ pigment { rgbt <.9, .2, .9, 0> } } }
    cylinder{<0,0,0> 10*pt
      0.016 texture { pigment { rgbt <1, 1, 1, 0> } finish { ambient 0.3 } }
    }
