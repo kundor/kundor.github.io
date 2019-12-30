@@ -1,0 +1,35 @@
+\documentclass[tikz]{standalone}
+\usetikzlibrary{patterns,fadings}
+\begin{document}
+%\begin{tikzpicture} % squap top and twisty top
+%    \def\ang{90} % 72 for pent
+%    \def\twist{15} % 36 for uniform pent
+%    \draw[red,fill=blue] (0:1) foreach \x in {0,\ang,...,359} { -- (\x:1) } -- cycle;
+%    % transparent yellow "under"-triangles (will be covered up)
+%    \foreach \x in {0,\ang,...,359}
+%      \fill [fill=yellow, fill opacity=0.7,line join=bevel] (\x:1) -- (\x+\twist:1) -- (\x+\ang:1) -- cycle;
+%    \foreach \x in {0,\ang,...,359}
+%      \draw [very thin,white,fill=yellow, fill opacity=0.7,line join=bevel] (\x-\ang+\twist:1) -- (\x:1) -- (\x+\twist:1) -- cycle;
+%    \draw[very thin,fill=blue] (\twist:1) foreach \x in {0,\ang,...,359} { -- (\x+\twist:1) } -- cycle;
+%\end{tikzpicture}
+% \begin{tikzpicture} % vertex neighborhood
+%     \fill[path fading=north,blue] (0,1) -- (1,.7) -- (2,1) -- cycle;
+%     \draw[white] (0,1) -- (.1,-.03923) coordinate (lb) 
+%         -- (1.1, -.33923) coordinate (mb) 
+%         -- (2.1,-.03923) 
+%         -- (2,1) coordinate (rt) 
+%         -- (1,.7) coordinate (mt) -- cycle;
+%     \draw[white] (mt) -- (mb);
+%     \draw[red] (mt) -- (lb) (rt) -- (mb);
+% \end{tikzpicture}
+ \begin{tikzpicture}[scale=2] % from prism
+     \fill[path fading=north,blue] (-.5,1.3) -- (0,1) -- (1, 1) -- (1.5, 1.3) -- cycle;
+     \draw[white,thick] (0,1) -- node[left] {$e$} (0,0) 
+         -- (1,0) -- (1,1) -- cycle;
+     \draw[white,dashed] (0,0) -- node[above left=-2pt] {$d$} (1,1);
+     \draw[white] (0,0) -- (-.25,0.15) edge[dotted] (-.5,0.3)
+           (0,1) -- (-.25,1.15) edge[dotted] (-.5,1.3)
+           (1,0) -- (1.25,0.15) edge[dotted] (1.5,0.3)
+           (1,1) -- (1.25,1.15) edge[dotted] (1.5,1.3);
+ \end{tikzpicture}
+\end{document}

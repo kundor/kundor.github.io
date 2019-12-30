@@ -1,0 +1,16 @@
+\documentclass[tikz]{standalone}
+\begin{document}
+ \begin{tikzpicture}[scale=2,z={(3mm,-5mm)}]
+     \draw[white,thick] (0,0,0) node[left,inner sep=0pt] {$P_1$}
+         -- (1,1,0) node[above right,inner sep=0pt] {$P_3$}
+         -- (1,0,0) node[right,inner sep=0pt] {$P_2$}
+         -- (0,0,1) node[below,inner sep=0pt] {$P_0$}
+         -- cycle;
+     \draw[white,thick] (0,0,0) -- (1,0,0)
+            (1,1,0) -- (0,0,1);
+     \draw[white,thin] (0,0,0.2) -- (0.2,0,0.2) -- (0.2,0,0)
+                       (0,0,0.2) -- (0.1414, 0.1414, 0.2) -- (0.1414, 0.1414, 0)
+                       (.8586, 0, .1414) -- (.8586, .2,.1414) -- (1, .2, 0)
+                       (.8,0,0) -- (.8, .2, 0) -- (1, .2, 0);
+ \end{tikzpicture}
+\end{document}
