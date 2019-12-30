@@ -52,7 +52,7 @@
 #declare tex_map = array[1]; // Default texmap
 
 // Array of vertex coordinates
-#declare num_verts = 13;
+#declare num_verts = 14;
 #declare verts = array [num_verts] {
     <1/sqrt(2-sqrt(2)), 0, 1/2>,
     <cos(pi/4)/sqrt(2-sqrt(2)), sin(pi/4)/sqrt(2-sqrt(2)), 1/2>,
@@ -66,7 +66,8 @@
     <cos(1*pi/2+pi/8)/sqrt(2), sin(1*pi/2+pi/8)/sqrt(2), (1+sqrt(2))/2>,
     <cos(2*pi/2+pi/8)/sqrt(2), sin(2*pi/2+pi/8)/sqrt(2), (1+sqrt(2))/2>,
     <cos(3*pi/2+pi/8)/sqrt(2), sin(3*pi/2+pi/8)/sqrt(2), (1+sqrt(2))/2>,
-    <0,0,0>
+    <0,0,0>,
+    <sqrt(1 + 1/sqrt(2))/4, sqrt(5 + 7/sqrt(2))/4, (2+sqrt(2))/4>
 }
 
 // Array of edge indexes
