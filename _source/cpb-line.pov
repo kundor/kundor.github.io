@@ -80,7 +80,7 @@
    sphere{<0,0,0> 1 texture{ pigment{color White filter 0.8 }}} 
    disc {verts[7] verts[7] 0.78 0.77 texture{ pigment{ color White } finish { diffuse 1.0}}}
    text { ttf "timrom.ttf" "c" 0.1, 0
-       pigment { White }
+       pigment { Gold }
        rotate 102.8*x
        translate -0.54*x -0.25*z 
        scale 0.18
@@ -114,7 +114,7 @@
                    pigment { White }
                }
            }*/
-   plane { verts[7] vlength(verts[7]) texture { pigment { color rgb <1,1,1> } } }
+   plane { verts[7] vlength(verts[7]) texture { pigment { color rgb <1,1,1> } finish { ambient 0.4 } } }
 
 background {color <0,0,0,1>}
 // Max Trace Level (10), increase if black areas appear when using transparency
