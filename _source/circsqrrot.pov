@@ -122,7 +122,8 @@
       #end
 
 // Extra object
-   sphere{<0,0,0> vlength(verts[0])
+      sphere{<0,0,0> vlength(verts[0]) texture{ pigment{color White filter 0.8 }}}
+/*   sphere{<0,0,0> vlength(verts[0])
        pigment{
            uv_mapping
            Tiles_Ptrn()
@@ -134,7 +135,7 @@
        }
 //       finish {ambient 1 diffuse 0}
        rotate 90*x
-   }
+   }*/
 
 background {color <0,0,0,1>}
 // Max Trace Level (10), increase if black areas appear when using transparency
@@ -143,7 +144,7 @@ global_settings{
     assumed_gamma 1.2
 }
 
-  camera { location <0,3.5,0.5>
+  camera { location <0,3.2,0.9>
            sky <0,0,1>
            look_at <0,0,0>
          }
